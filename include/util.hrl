@@ -1,4 +1,4 @@
--define(B(D),					    xxweb_util:to_binary(D)).
+-define(B(D),					    (xxweb_util:to_binary(D))/binary).
 
 -define(TOU8B(Characters),			unicode:characters_to_binary(Characters)).
 -define(TOI(Arg),					xxweb_util:to_integer(Arg)).
