@@ -1,0 +1,8 @@
+{application, hello,
+	[
+	 {description,	"hello"},
+	 {vsn, 			"1.0"},
+	 {applications, [kernel, stdlib, xxweb]},
+	 {mod,			{hello_app, []}}
+	]
+}.
