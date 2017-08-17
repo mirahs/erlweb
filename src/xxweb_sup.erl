@@ -22,7 +22,7 @@ start_link(ArgMap) ->
 init([ArgMap2]) ->
 	ArgMap 		= check_module(ArgMap2, [{dispatcher,xxweb_dispatch},{logger,xxweb_log}]),
 
-	[Port,Acceptors,StaticDir] = get_options(ArgMap, [port,acceptors,static_dir]),
+	[Port,Acceptors,StaticDir,SslOpen,SslCertFile,SslKeyFile] = get_options(ArgMap, [port,acceptors,static_dir,ssl_open,ssl_certfile,ssl_keyfile]),
 
 	Routes		= routes(ArgMap, StaticDir),
 	Dispatch	= cowboy_router:compile(Routes),
@@ -32,8 +32,12 @@ init([ArgMap2]) ->
 		{onrequest,  	fun xxweb_session:on_request/1},
 		{onresponse, 	fun xxweb_session:on_response/4}
 	],
-	{?ok, _}	= cowboy:start_http(http, Acceptors, TransOpts, ProtoOpts),
-
+	case SslOpen of
+		true ->
+			TransOptsSsl= [{certfile,SslCertFile},{keyfile,SslKeyFile} | TransOpts],
+			{ok, _} = cowboy:start_https(https, Acceptors, TransOptsSsl, ProtoOpts);
+		_ -> {ok, _}	= cowboy:start_http(http, Acceptors, TransOpts, ProtoOpts)
+	end,
 
 	Session	= ?CHILD(xxweb_session_srv, worker),
     {?ok, {{one_for_one, 10, 5}, [Session]} }.
