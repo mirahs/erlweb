@@ -7,7 +7,7 @@
 		]).
 
 
-init(Req, #{apps:=Apps,session_apps:=SessionApps,dispatcher:=Dispatcher,logger:=Logger} = Opt) ->
+init(Req, #{apps:=Apps,session_apps:=SessionApps,dispatcher:=Dispatcher} = Opt) ->
 	AppB= cowboy_req:binding(app, Req),
 	case lists:member(AppB, Apps) of
 		?true ->
@@ -23,7 +23,7 @@ init(Req, #{apps:=Apps,session_apps:=SessionApps,dispatcher:=Dispatcher,logger:=
 						handle_do(Method, Req2, Opt, PH)
 					catch
 						Error:Reason ->
-							Logger:error("Path:~p, PH:~p, Error:~p, Reason:~p,~nStackTrace:~p", [Path,PH,Error,Reason,erlang:get_stacktrace()]),
+							?ERR("Path:~p, PH:~p, Error:~p, Reason:~p,~nStackTrace:~p", [Path,PH,Error,Reason,erlang:get_stacktrace()]),
 							xxweb_handler_error:error_out(Req2, Opt)
 					end;
 				{?error, UrlNoAccess} ->

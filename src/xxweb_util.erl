@@ -795,7 +795,7 @@ datetime2timestamp(Datetime) when is_list(Datetime) ->
 	datetime2timestamp(Y, M, D, H, I, S).
 	
 datetime2timestamp(Y, M, D, H, I, S) ->
-	% ?MSG_ECHO("----------------------- ~w~n",[{Y, M, D, H, I, S}]),
+	% ?INFO("----------------------- ~w~n",[{Y, M, D, H, I, S}]),
 	UniversalTime = erlang:localtime_to_universaltime({{Y, M, D}, {H, I, S}}),
 	Seconds 	  = calendar:datetime_to_gregorian_seconds(UniversalTime),
 	TimeGMT 	  = 62167219200,
@@ -1036,5 +1036,5 @@ request_get(Url,Arguments)->
 					Url2 = Url ++"?"++Arguments3
 			end
 	end,
-%  	?MSG_ECHO("Url:~p",[Url2]),
+%  	?INFO("Url:~p",[Url2]),
 	httpc:request(get, {Url2, []}, [], []).

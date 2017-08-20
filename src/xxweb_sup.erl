@@ -20,7 +20,7 @@ start_link(ArgMap) ->
 
 
 init([ArgMap2]) ->
-	ArgMap 		= check_module(ArgMap2, [{dispatcher,xxweb_dispatch},{logger,xxweb_log}]),
+	ArgMap 		= check_module(ArgMap2, [{dispatcher,xxweb_dispatch}]),
 
 	[Port,Acceptors,StaticDir,SslOpen,SslCertFile,SslKeyFile] = get_options(ArgMap, [port,acceptors,static_dir,ssl_open,ssl_certfile,ssl_keyfile]),
 

@@ -25,7 +25,7 @@ load_module(Module) ->
 				{module, Module} ->
 					?true;
 				{?error, Reason} ->
-					?MSG_ECHO("(~p) load fail : ~p~n", [Module, Reason]),
+					?ERR("(~p) load fail : ~p~n", [Module, Reason]),
 					?false
 			end
 	end.

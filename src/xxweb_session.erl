@@ -59,14 +59,14 @@ on_request(Req) ->
 	case cowboy_req:match_cookies([?SESSION_COOKIE_ATOM], Req) of
 		#{session_cookie:=SessionId} when SessionId =/= <<"">> ->
 			SessionData	= xxweb_session_srv:session_get(SessionId),
-			%?MSG_ECHO("SessionId : ~p~n", [SessionId]),
-			%?MSG_ECHO("SessionData : ~p~n", [SessionData]),
+			%?INFO("SessionId : ~p~n", [SessionId]),
+			%?INFO("SessionData : ~p~n", [SessionData]),
 			[erlang:put(Key, Value) || {Key, Value} <- SessionData],
 			erlang:put(?SESSION_KEYS, [Key || {Key, _Data} <- SessionData]),
 			Req;
 		_ ->
 			SessionId = session_id(Req),
-			%?MSG_ECHO("SessionId : ~p~n", [SessionId]),
+			%?INFO("SessionId : ~p~n", [SessionId]),
 			erlang:put(?SESSION_KEYS, []),
 			cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, [{path, <<"/">>}], Req)
 	end.

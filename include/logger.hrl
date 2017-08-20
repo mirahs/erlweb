@@ -1,1 +1,5 @@
--define(MSG_ECHO(S,D),		io:format("ECHO Now:~p Pid:~p ~p:~p " ++ S ++ "~n",		[os:timestamp(),self(),?MODULE,?LINE|D])  ).
+-define(INFO(Format),			    xxweb_tool:info(Format, [], self(), ?MODULE, ?LINE)).
+-define(INFO(Format, Args),			xxweb_tool:info(Format, Args, self(), ?MODULE, ?LINE)).
+
+-define(ERR(Format),			    xxweb_tool:error(Format, [], self(), ?MODULE, ?LINE)).
+-define(ERR(Format, Args),			xxweb_tool:error(Format, Args, self(), ?MODULE, ?LINE)).

@@ -38,7 +38,7 @@ make(Dir, OutDir, CustomTags) ->
 									  ".html" ->
 										  RootName	= filename:rootname(FileBaseName),
 										  RootNameA	= ?TOA(RootName),
-										  %?MSG_ECHO("FileName : ~p RootNameA : ~p Opts : ~p~n", [FileName, RootNameA, Opts]),
+										  %?INFO("FileName : ~p RootNameA : ~p Opts : ~p~n", [FileName, RootNameA, Opts]),
 										  erlydtl:compile_file(FileName, RootNameA, CompileArgs);
 									  _ ->
 										  ?skip
