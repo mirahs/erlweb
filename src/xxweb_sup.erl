@@ -22,9 +22,9 @@ start_link(ArgMap) ->
 init([ArgMap2]) ->
 	ArgMap 		= check_module(ArgMap2, [{dispatcher,xxweb_dispatch}]),
 
-	[Port,Acceptors,StaticDir,SslOpen,SslCertFile,SslKeyFile] = get_options(ArgMap, [port,acceptors,static_dir,ssl_open,ssl_certfile,ssl_keyfile]),
+	[Port,Acceptors,StaticDir,CustomRoutes,SslOpen,SslCertFile,SslKeyFile] = get_options(ArgMap, [port,acceptors,static_dir,custom_routes,ssl_open,ssl_certfile,ssl_keyfile]),
 
-	Routes		= routes(ArgMap, StaticDir),
+	Routes		= routes(ArgMap, StaticDir, CustomRoutes),
 	Dispatch	= cowboy_router:compile(Routes),
 	TransOpts	= [{port, Port}],
 	ProtoOpts	= [
@@ -44,11 +44,12 @@ init([ArgMap2]) ->
 
 
 
-routes(ArgMap, StaticDir) ->
+routes(ArgMap, StaticDir, CustomRoutesTmp) ->
+	CustomRoutes = ?IF(CustomRoutesTmp =:= ?undefined, [], CustomRoutesTmp),
 	[
-		{'_', [
-			{<<"/static/[...]">>,					cowboy_static,			{dir, StaticDir}},
-			{<<"/[:app/[:module/[:func/[...]]]]">>,	xxweb_handler,			ArgMap}
+		{'_', CustomRoutes ++ [
+			{"/static/[...]",					cowboy_static,			{dir, StaticDir}},
+			{"/[:app/[:module/[:func/[...]]]]",	xxweb_handler,			ArgMap}
 		]
 		}
 	].
