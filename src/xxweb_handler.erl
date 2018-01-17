@@ -6,6 +6,8 @@
 		 init/2
 		]).
 
+-define(crossdomain, [{<<"Access-Control-Allow-Origin">>, <<"*">>}]).
+
 
 init(Req, #{apps:=Apps,session_apps:=SessionApps,dispatcher:=Dispatcher} = Opt) ->
 	AppB= cowboy_req:binding(app, Req),
@@ -27,7 +29,7 @@ init(Req, #{apps:=Apps,session_apps:=SessionApps,dispatcher:=Dispatcher} = Opt) 
 							xxweb_handler_error:error_out(Req2, Opt)
 					end;
 				{?error, UrlNoAccess} ->
-					Req3 = cowboy_req:reply(303, [{<<"location">>, ?TOB(UrlNoAccess)}], <<>>, Req2),
+					Req3 = cowboy_req:reply(303, ?crossdomain ++ [{<<"location">>, ?TOB(UrlNoAccess)}], <<>>, Req2),
 					{?ok, Req3, Opt}
 			end;
 		?false ->
@@ -38,10 +40,10 @@ init(Req, #{apps:=Apps,session_apps:=SessionApps,dispatcher:=Dispatcher} = Opt) 
 handle_do(Method, Req, Opts, #{controller:=ModuleA,func:=FuncA,dtl:=DtlA,dtle:=DtlEditA}) ->
 	try ModuleA:FuncA(Method, Req, Opts) of
 		{output, Content} ->
-			Req2 = cowboy_req:reply(200, [{<<"content-type">>, <<"text/plain; charset=utf-8">>}], Content, Req),
+			Req2 = cowboy_req:reply(200, ?crossdomain ++ [{<<"content-type">>, <<"text/plain; charset=utf-8">>}], Content, Req),
 			{?ok, Req2, Opts};
 		{output, Content, Req1, Opts1} ->
-			Req2 = cowboy_req:reply(200, [{<<"content-type">>, <<"text/plain;charset=utf-8">>}], Content, Req1),
+			Req2 = cowboy_req:reply(200, ?crossdomain ++ [{<<"content-type">>, <<"text/plain;charset=utf-8">>}], Content, Req1),
 			{?ok, Req2, Opts1};
 		{?ok, dtl} ->
 			handle_do_dtl(Req, Opts, DtlA, []);
@@ -52,7 +54,7 @@ handle_do(Method, Req, Opts, #{controller:=ModuleA,func:=FuncA,dtl:=DtlA,dtle:=D
 		{?ok, dtl_edit, DtlKeyValues} ->
 			handle_do_dtl(Req, Opts, DtlEditA, DtlKeyValues);
 		{json, JsonData} ->
-			Req1 = cowboy_req:reply(200, [{<<"content-type">>, <<"text/json;charset=utf-8">>}], JsonData, Req),
+			Req1 = cowboy_req:reply(200, ?crossdomain ++ [{<<"content-type">>, <<"text/json;charset=utf-8">>}], JsonData, Req),
 			{?ok, Req1, Opts};
 		redirect ->
 			handle_do_redirect(Req, Opts);
@@ -76,7 +78,7 @@ handle_do(Method, Req, Opts, #{controller:=ModuleA,func:=FuncA,dtl:=DtlA,dtle:=D
 
 handle_do_dtl(Req, Opts, DtlA, DtlKeyValues) ->
 	{?ok, Html} = DtlA:render(DtlKeyValues),
-	Req3 = cowboy_req:reply(200, [{<<"content-type">>, <<"text/html;charset=utf-8">>}], Html, Req),
+	Req3 = cowboy_req:reply(200, ?crossdomain ++ [{<<"content-type">>, <<"text/html;charset=utf-8">>}], Html, Req),
 	{?ok, Req3, Opts}.
 
 handle_do_error(Req, Opts, Msg) ->
@@ -85,12 +87,12 @@ handle_do_error(Req, Opts, Msg, Url) ->
 	MsgB	= xxweb_util:to_binary(Msg),
 	Content = <<"<script type=\"text/javascript\">alert('", MsgB/binary ,"');</script>">>,
 	PathB	= {<<"refresh">>, <<"0;url=\"", ?B(Url), "\"">>},
-	Req2	= cowboy_req:reply(200, [PathB, {<<"content-type">>, <<"text/html; charset=utf-8">>}], Content, Req),
+	Req2	= cowboy_req:reply(200, ?crossdomain ++ [PathB, {<<"content-type">>, <<"text/html; charset=utf-8">>}], Content, Req),
 	{?ok, Req2, Opts}.
 
 handle_do_redirect(Req, Opts) ->
 	handle_do_redirect(Req, Opts, cowboy_req:path(Req)).
 handle_do_redirect(Req, Opts, Url) ->
-	Req2= cowboy_req:reply(303, [{<<"location">>, ?TOB(Url)}], <<>>, Req),
+	Req2= cowboy_req:reply(303, ?crossdomain ++ [{<<"location">>, ?TOB(Url)}], <<>>, Req),
 	{?ok, Req2, Opts}.
 
