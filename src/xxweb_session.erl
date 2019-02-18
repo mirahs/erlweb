@@ -52,10 +52,10 @@ destory(Req) ->
 	SessionId = session_id(Req, ?false),
 	del(),
 	xxweb_session_srv:session_destory(SessionId),
-	cowboy_req:set_resp_cookie(?SESSION_COOKIE, <<"">>, [{path, <<"/">>}], Req).
+	cowboy_req:set_resp_cookie(?SESSION_COOKIE, <<"">>, #{path => <<"/">>}, Req).
 
 %% 请求时调用
-on_request(Req) ->
+on_request(Req) ->?INFO("on request"),
 	case cowboy_req:match_cookies([?SESSION_COOKIE_ATOM], Req) of
 		#{session_cookie := SessionId} when SessionId =/= <<"">> ->
 			SessionData	= xxweb_session_srv:session_get(SessionId),
@@ -68,11 +68,11 @@ on_request(Req) ->
 			SessionId = session_id(Req),
 			%?INFO("SessionId : ~p~n", [SessionId]),
 			erlang:put(?SESSION_KEYS, []),
-			cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, [{path, <<"/">>}], Req)
+			cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, #{path => <<"/">>}, Req)
 	end.
 
 %% 返回前调用
-on_response(_Status, _Headers, _Body, Req) ->
+on_response(_Status, _Headers, _Body, Req) ->?INFO("on response"),
 	case erlang:get(?SESSION_KEYS) of
 		?undefined ->
 			?skip;
