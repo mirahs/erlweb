@@ -55,9 +55,9 @@ destory(Req) ->
 	cowboy_req:set_resp_cookie(?SESSION_COOKIE, <<"">>, [{path, <<"/">>}], Req).
 
 %% 请求时调用
-on_request(Req) ->%cowboy_req:match_cookies([{client, [], <<>>}, {server, [], <<>>}], Req1),
-	case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
-		#{session_cookie:=SessionId} when SessionId =/= <<"">> ->
+on_request(Req) ->
+	case cowboy_req:match_cookies([?SESSION_COOKIE_ATOM], Req) of
+		#{session_cookie := SessionId} when SessionId =/= <<"">> ->
 			SessionData	= xxweb_session_srv:session_get(SessionId),
 			%?INFO("SessionId : ~p~n", [SessionId]),
 			%?INFO("SessionData : ~p~n", [SessionData]),
