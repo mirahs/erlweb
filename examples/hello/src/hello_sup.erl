@@ -24,7 +24,5 @@ init([]) ->
 	},
 	XXWeb	= ?CHILD(xxweb_sup, supervisor, [ArgMap]),
 
-	Reloader= ?CHILD(hello_reloader_srv, worker, []),
-
 	Strategy= {one_for_one, 10, 1},
-	{ok, {Strategy, [XXWeb,Reloader]}}.
+	{ok, {Strategy, [XXWeb]}}.

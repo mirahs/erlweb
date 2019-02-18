@@ -7,7 +7,7 @@
 
 
 start() ->
-	ok = application:ensure_all_started(hello),
+	{ok, _} = application:ensure_all_started(hello),
 	ok.
 
 stop() ->
