@@ -27,11 +27,11 @@ init([ArgMap2]) ->
     Routes		= routes(ArgMap, StaticDir, CustomRoutes),
     Dispatch	= cowboy_router:compile(Routes),
     TransOpts	= [{port, Port}],
-    ProtoOpts	= [
-        {env,			[{dispatch, Dispatch}]},
-        {onrequest,  	fun xxweb_session:on_request/1},
-        {onresponse, 	fun xxweb_session:on_response/4}
-    ],
+    ProtoOpts	= #{
+        env =>			#{dispatch => Dispatch},
+        onrequest =>  	fun xxweb_session:on_request/1,
+        onresponse => 	fun xxweb_session:on_response/4
+    },
     case SslOpen of
         true ->
             TransOptsSsl= [{certfile,SslCertFile},{keyfile,SslKeyFile} | TransOpts],
