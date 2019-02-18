@@ -56,7 +56,7 @@ destory(Req) ->
 
 %% 请求时调用
 on_request(Req) ->
-	case cowboy_req:match_cookies([?SESSION_COOKIE_ATOM], Req) of
+	case cowboy_req:match_cookies([?SESSION_COOKIE], Req) of
 		#{session_cookie := SessionId} when SessionId =/= <<"">> ->
 			SessionData	= xxweb_session_srv:session_get(SessionId),
 			%?INFO("SessionId : ~p~n", [SessionId]),
