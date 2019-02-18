@@ -52,7 +52,7 @@ destory(Req) ->
 	SessionId = session_id(Req, ?false),
 	del(),
 	xxweb_session_srv:session_destory(SessionId),
-	cowboy_req:set_resp_cookie(?SESSION_COOKIE, <<"">>, #{path => <<"/">>}, Req).
+	cowboy_req:set_resp_cookie(?SESSION_COOKIE, <<"">>, Req, #{path => <<"/">>}).
 
 %% 请求时调用
 on_request(Req) ->?INFO("on request"),
@@ -68,7 +68,7 @@ on_request(Req) ->?INFO("on request"),
 			SessionId = session_id(Req),
 			%?INFO("SessionId : ~p~n", [SessionId]),
 			erlang:put(?SESSION_KEYS, []),
-			cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, #{path => <<"/">>}, Req)
+			cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, Req, #{path => <<"/">>})
 	end.
 
 %% 返回前调用
