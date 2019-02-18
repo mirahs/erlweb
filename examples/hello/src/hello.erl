@@ -7,7 +7,8 @@
 
 
 start() ->
-	application:ensure_all_started(hello).
+	ok = application:ensure_all_started(hello),
+	ok.
 
 stop() ->
     application:stop(hello).
