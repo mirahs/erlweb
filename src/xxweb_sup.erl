@@ -35,8 +35,8 @@ init([ArgMap2]) ->
 	case SslOpen of
 		true ->
 			TransOptsSsl= [{certfile,SslCertFile},{keyfile,SslKeyFile} | TransOpts],
-			{ok, _} = cowboy:start_https(https, Acceptors, TransOptsSsl, ProtoOpts);
-		_ -> {ok, _}	= cowboy:start_http(http, Acceptors, TransOpts, ProtoOpts)
+			{ok, _} = cowboy:start_clear(https, Acceptors, TransOptsSsl, ProtoOpts);
+		_ -> {ok, _}	= cowboy:start_clear(http, Acceptors, TransOpts, ProtoOpts)
 	end,
 
 	Session	= ?CHILD(xxweb_session_srv, worker),
