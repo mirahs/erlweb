@@ -13,5 +13,5 @@ init(Req, Opts) ->
 
 
 error_out(Req, Opts) ->
-	Req2 = cowboy_req:reply(500, #{<<"content-type">> => <<"text/plain;charset=utf-8">>}, <<"request failed, sorry\n">>, Req),
+	Req2 = cowboy_req:reply(500, [{<<"content-type">>, <<"text/plain;charset=utf-8">>}], <<"request failed, sorry\n">>, Req),
 	{?ok, Req2, Opts}.
