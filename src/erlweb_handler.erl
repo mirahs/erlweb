@@ -1,22 +1,22 @@
--module(xxweb_handler).
+-module(erlweb_handler).
 
 -include("common.hrl").
 
 -export([
-		 init/2
-		]).
+	init/2
+]).
 
 
-init(Req, #{apps:=Apps,session_apps:=SessionApps,dispatcher:=Dispatcher} = Opt) ->
+init(Req, #{apps := Apps, session_apps := SessionApps, dispatcher := Dispatcher} = Opt) ->
 	AppB= cowboy_req:binding(app, Req),
 	case lists:member(AppB, Apps) of
-		?true ->
+		true ->
 			Path	= cowboy_req:path(Req),
 			Method	= cowboy_req:method(Req),
 			ModuleB	= cowboy_req:binding(module, Req),
 			FuncB	= cowboy_req:binding(func, Req),
 
-			Req2 = ?IF(lists:member(AppB, SessionApps), xxweb_session:on_request(Req), Req),
+			Req2 = ?IF(lists:member(AppB, SessionApps), erlweb_session:on_request(Req), Req),
 			case Dispatcher:get(Path, AppB, ModuleB, FuncB) of
 				{?ok, PH} ->
 					try
@@ -24,14 +24,13 @@ init(Req, #{apps:=Apps,session_apps:=SessionApps,dispatcher:=Dispatcher} = Opt) 
 					catch
 						Error:Reason ->
 							?ERR("Path:~p, PH:~p, Error:~p, Reason:~p,~nStackTrace:~p", [Path,PH,Error,Reason,erlang:get_stacktrace()]),
-							xxweb_handler_error:error_out(Req2, Opt)
+							erlweb_handler_error:error_out(Req2, Opt)
 					end;
 				{?error, UrlNoAccess} ->
 					Req3 = cowboy_req:reply(303, [{<<"location">>, ?TOB(UrlNoAccess)}], <<>>, Req2),
 					{?ok, Req3, Opt}
 			end;
-		?false ->
-			xxweb_handler_error:error_out(Req, Opt)
+		false -> erlweb_handler_error:error_out(Req, Opt)
 	end.
 
 
@@ -82,7 +81,7 @@ handle_do_dtl(Req, Opts, DtlA, DtlKeyValues) ->
 handle_do_error(Req, Opts, Msg) ->
 	handle_do_error(Req, Opts, Msg, cowboy_req:path(Req)).
 handle_do_error(Req, Opts, Msg, Url) ->
-	MsgB	= xxweb_util:to_binary(Msg),
+	MsgB	= erlweb_util:to_binary(Msg),
 	Content = <<"<script type=\"text/javascript\">alert('", MsgB/binary ,"');</script>">>,
 	PathB	= {<<"refresh">>, <<"0;url=\"", ?B(Url), "\"">>},
 	Req2	= cowboy_req:reply(200, [PathB, {<<"content-type">>, <<"text/html; charset=utf-8">>}], Content, Req),

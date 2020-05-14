@@ -2,7 +2,7 @@
 	[
 	 {description,	"hello"},
 	 {vsn, 			"1.0"},
-	 {applications, [kernel, stdlib, xxweb]},
+	 {applications, [kernel, stdlib, erlweb]},
 	 {mod,			{hello_app, []}}
 	]
 }.

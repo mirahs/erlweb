@@ -1,5 +1,5 @@
--define(INFO(Format),			    xxweb_tool:info(Format, [], self(), ?MODULE, ?LINE)).
--define(INFO(Format, Args),			xxweb_tool:info(Format, Args, self(), ?MODULE, ?LINE)).
+-define(INFO(Format),			    erlweb_tool:info(Format, [], self(), ?MODULE, ?LINE)).
+-define(INFO(Format, Args),			erlweb_tool:info(Format, Args, self(), ?MODULE, ?LINE)).
 
--define(ERR(Format),			    xxweb_tool:error(Format, [], self(), ?MODULE, ?LINE)).
--define(ERR(Format, Args),			xxweb_tool:error(Format, Args, self(), ?MODULE, ?LINE)).
+-define(ERR(Format),			    erlweb_tool:error(Format, [], self(), ?MODULE, ?LINE)).
+-define(ERR(Format, Args),			erlweb_tool:error(Format, Args, self(), ?MODULE, ?LINE)).

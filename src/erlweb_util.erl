@@ -1,4 +1,4 @@
--module(xxweb_util).
+-module(erlweb_util).
 
 -include("common.hrl"). 
 

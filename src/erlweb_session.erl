@@ -1,4 +1,4 @@
--module(xxweb_session).
+-module(erlweb_session).
 
 -include("common.hrl").
 
@@ -51,14 +51,14 @@ del(Key) ->
 destory(Req) ->
 	SessionId = session_id(Req, ?false),
 	del(),
-	xxweb_session_srv:session_destory(SessionId),
+	erlweb_session_srv:session_destory(SessionId),
 	cowboy_req:set_resp_cookie(?SESSION_COOKIE, <<"">>, [{path, <<"/">>}], Req).
 
 %% 请求时调用
 on_request(Req) ->
 	case cowboy_req:match_cookies([?SESSION_COOKIE_ATOM], Req) of
 		#{session_cookie:=SessionId} when SessionId =/= <<"">> ->
-			SessionData	= xxweb_session_srv:session_get(SessionId),
+			SessionData	= erlweb_session_srv:session_get(SessionId),
 			%?INFO("SessionId : ~p~n", [SessionId]),
 			%?INFO("SessionData : ~p~n", [SessionData]),
 			[erlang:put(Key, Value) || {Key, Value} <- SessionData],
@@ -96,7 +96,7 @@ session_id(Req, ?true) ->
 		#{session_cookie:=SessionId} when SessionId =/= <<"">> ->
 			?TOB(SessionId);
 		_ ->
-			?TOB(xxweb_session_srv:session_new())
+			?TOB(erlweb_session_srv:session_new())
 	end;
 session_id(Req, ?false) ->
 	case cowboy_req:match_cookies([?SESSION_COOKIE_ATOM], Req) of
@@ -110,4 +110,4 @@ session_id(Req, ?false) ->
 session_set(SessionId) ->
 	SessionKeys	= erlang:get(?SESSION_KEYS),
 	SessionData	= [{Key, erlang:get(Key)} || Key <- SessionKeys],
-	xxweb_session_srv:session_set(SessionId, SessionData).
+	erlweb_session_srv:session_set(SessionId, SessionData).
