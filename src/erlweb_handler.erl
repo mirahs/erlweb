@@ -7,12 +7,12 @@
 ]).
 
 
-init(Req, State = #{apps := Apps, session_apps := SessionApps, dispatcher := Dispatcher}) ->
+init(Req = #{path := Path, method := Method}, State = #{apps := Apps, session_apps := SessionApps, dispatcher := Dispatcher}) ->
 	AppB = cowboy_req:binding(app, Req),
 	case lists:member(AppB, Apps) of
 		true ->
-			Path	= cowboy_req:path(Req),
-			Method	= cowboy_req:method(Req),
+			%Path	= cowboy_req:path(Req),
+			%Method	= cowboy_req:method(Req),
 			ModuleB	= cowboy_req:binding(module, Req),
 			FuncB	= cowboy_req:binding(func, Req),
 
