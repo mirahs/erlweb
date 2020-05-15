@@ -16,13 +16,13 @@ start_link() ->
 
 init([]) ->
 	ArgMap	= #{
-		port		=> 8080,
+		port		=> 1111,
 		acceptors	=> 800,
-		static_dir	=> "/data/xxweb/assets",
+		static_dir	=> "/data/erlweb/assets",
 		apps		=> [<<"api">>,<<"cp">>,<<"doc">>],
 		session_apps=> [<<"cp">>]
 	},
-	XXWeb	= ?CHILD(xxweb_sup, supervisor, [ArgMap]),
+	ErlWeb = ?CHILD(erlweb_sup, supervisor, [ArgMap]),
 
-	Strategy= {one_for_one, 10, 1},
-	{ok, {Strategy, [XXWeb]}}.
+	Strategy = {one_for_one, 10, 1},
+	{ok, {Strategy, [ErlWeb]}}.

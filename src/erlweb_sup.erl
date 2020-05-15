@@ -1,4 +1,4 @@
--module(xxweb_sup).
+-module(erlweb_sup).
 
 -behaviour(supervisor).
 
@@ -20,7 +20,7 @@ start_link(ArgMap) ->
 
 
 init([ArgMap2]) ->
-    ArgMap 		= check_module(ArgMap2, [{dispatcher,xxweb_dispatch}]),
+    ArgMap 		= check_module(ArgMap2, [{dispatcher,erlweb_dispatch}]),
 
     [Port,Acceptors,StaticDir,CustomRoutes,SslOpen,SslCertFile,SslKeyFile] = get_options(ArgMap, [port,acceptors,static_dir,custom_routes,ssl_open,ssl_certfile,ssl_keyfile]),
 
@@ -29,8 +29,8 @@ init([ArgMap2]) ->
     TransOpts	= [{port, Port}],
     ProtoOpts	= #{
         env =>			#{dispatch => Dispatch},
-        onrequest =>  	fun xxweb_session:on_request/1,
-        onresponse => 	fun xxweb_session:on_response/4
+        onrequest =>  	fun erlweb_session:on_request/1,
+        onresponse => 	fun erlweb_session:on_response/4
     },
     case SslOpen of
         true ->
@@ -39,7 +39,7 @@ init([ArgMap2]) ->
         _ -> {ok, _}	= cowboy:start_clear(http, TransOpts, ProtoOpts)
     end,
 
-    Session	= ?CHILD(xxweb_session_srv, worker),
+    Session	= ?CHILD(erlweb_session_srv, worker),
     {?ok, {{one_for_one, 10, 5}, [Session]} }.
 
 
@@ -49,7 +49,7 @@ routes(ArgMap, StaticDir, CustomRoutesTmp) ->
     [
         {'_', CustomRoutes ++ [
             {"/static/[...]",					cowboy_static,			{dir, StaticDir}},
-            {"/[:app/[:module/[:func/[...]]]]",	xxweb_handler,			ArgMap}
+            {"/[:app/[:module/[:func/[...]]]]",	erlweb_handler,		ArgMap}
         ]
         }
     ].
@@ -71,7 +71,7 @@ check_module(ArgMap, [{Key,Default}|Values]) ->
         ?undefined ->
             check_module(ArgMap#{Key=>Default},Values);
         Module ->
-            case xxweb_dispatch:load_module(Module) of
+            case erlweb_dispatch:load_module(Module) of
                 ?true ->
                     check_module(ArgMap,Values);
                 ?false ->

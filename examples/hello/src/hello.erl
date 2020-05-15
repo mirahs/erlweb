@@ -11,4 +11,4 @@ start() ->
 	ok.
 
 stop() ->
-    application:stop(hello).
+	application:stop(hello).

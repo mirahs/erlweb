@@ -1,4 +1,4 @@
--module(xxweb_make_dtl).
+-module(erlweb_make_dtl).
 
 -include("common.hrl").
 
@@ -7,9 +7,9 @@
 ]).
 
 
-%% erl -pa deps/xxweb/ebin deps/erlydtl/ebin -s xxweb_make_dtl -s init stop -extra ./src/templates
-%% erl -pa deps/xxweb/ebin deps/erlydtl/ebin -s xxweb_make_dtl -s init stop -extra ./src/templates ./ebin
-%% erl -pa deps/xxweb/ebin deps/erlydtl/ebin -s xxweb_make_dtl -s init stop -extra ./src/templates ./ebin  web_custom_tags
+%% erl -pa deps/erlweb/ebin deps/erlydtl/ebin -s erlweb_make_dtl -s init stop -extra ./src/templates
+%% erl -pa deps/erlweb/ebin deps/erlydtl/ebin -s erlweb_make_dtl -s init stop -extra ./src/templates ./ebin
+%% erl -pa deps/erlweb/ebin deps/erlydtl/ebin -s erlweb_make_dtl -s init stop -extra ./src/templates ./ebin  web_custom_tags
 start() ->
 	case init:get_plain_arguments() of
 		[] ->

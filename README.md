@@ -1,4 +1,4 @@
-# xxweb
-xxweb by cowboy(2.6.1)
+# erlweb
+erlweb by cowboy(2.7.0), erlang(20.2)
 
-[examples](https://github.com/mirahs/xxweb/tree/master/examples)
+[examples](https://github.com/mirahs/erlweb/tree/master/examples)

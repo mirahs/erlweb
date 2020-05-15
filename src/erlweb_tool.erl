@@ -1,4 +1,4 @@
--module(xxweb_tool).
+-module(erlweb_tool).
 
 -export([
 	info/5,
@@ -7,7 +7,7 @@
 
 
 info(Format, Args, Pid, Module, Line) ->
-	Msg = format("xxweb INFO", Format, Args, Pid, Module, Line),
+	Msg = format("erlweb INFO", Format, Args, Pid, Module, Line),
 	echo(Msg).
 
 error(Format, Args, Pid, Module, Line) ->
@@ -23,7 +23,7 @@ format(Info, Format, Args, Pid, Module, Line) ->
 format_error(Format, Args, Pid, Module, Line) ->
 	{{Y, M, D}, {H, I, S}} = erlang:localtime(),
 	Date = lists:concat([Y, "-", M, "-", D, " ", H, ":", I, ":", S]),
-	erlang:iolist_to_binary(io_lib:format("~n*****~nDATE:~s Pid:~w xxweb Error ~w:~w~n" ++ Format ++ "~n*****~n", [Date, Pid, Module, Line] ++ Args)).
+	erlang:iolist_to_binary(io_lib:format("~n*****~nDATE:~s Pid:~w erlweb Error ~w:~w~n" ++ Format ++ "~n*****~n", [Date, Pid, Module, Line] ++ Args)).
 
 %% 输出到控制台
 echo(Msg) ->

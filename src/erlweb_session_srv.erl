@@ -1,4 +1,4 @@
--module(xxweb_session_srv).
+-module(erlweb_session_srv).
 
 -include("common.hrl").
 

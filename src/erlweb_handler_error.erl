@@ -1,4 +1,4 @@
--module(xxweb_handler_error).
+-module(erlweb_handler_error).
 
 -include("common.hrl").
 

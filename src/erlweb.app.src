@@ -1,6 +1,6 @@
-{application, xxweb,
+{application, erlweb,
  [
-  {description, "xxweb by cowboy"},
+  {description, "erlweb by cowboy"},
   {vsn, "1.0.0"},
   {applications, [
                   kernel,

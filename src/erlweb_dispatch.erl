@@ -1,4 +1,4 @@
--module(xxweb_dispatch).
+-module(erlweb_dispatch).
 
 -include("common.hrl"). 
 
