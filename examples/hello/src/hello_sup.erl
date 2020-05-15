@@ -20,7 +20,7 @@ start_link() ->
 
 init([]) ->
 	ArgMap	= #{
-		port		=> 8080,
+		port		=> 1111,
 		acceptors	=> 800,
 		static_dir	=> "/data/erlweb/assets",
 		apps		=> [<<"api">>,<<"cp">>,<<"doc">>],
