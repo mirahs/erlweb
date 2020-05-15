@@ -4,7 +4,6 @@
 
 
 index(_Method, _Req, _OPts) ->
-	io:format("~p index function method:~p~n", [?MODULE, _Method]),
 	{output, "hello,from controller_cp_index:index"}.
 
 
