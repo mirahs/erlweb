@@ -1,11 +1,11 @@
 {application, erlweb,
- [
-  {description, "erlweb by cowboy"},
-  {vsn, "1.0.0"},
-  {applications, [
-                  kernel,
-                  stdlib,
-                  
-				  cowboy
-                 ]}
- ]}.
+    [
+        {description, "erlweb by cowboy"},
+        {vsn, "1.0.0"},
+        {applications, [
+            kernel,
+            stdlib,
+
+            cowboy
+        ]}
+    ]}.

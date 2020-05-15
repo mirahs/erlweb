@@ -34,47 +34,40 @@ init([ArgMap2]) ->
     },
     case SslOpen of
         true ->
-            TransOptsSsl= [{certfile,SslCertFile},{keyfile,SslKeyFile} | TransOpts],
-            {ok, _} = cowboy:start_clear(https, TransOptsSsl, ProtoOpts);
-        _ -> {ok, _}	= cowboy:start_clear(http, TransOpts, ProtoOpts)
+            TransOptsSsl = [{certfile, SslCertFile}, {keyfile, SslKeyFile} | TransOpts],
+            {ok, _} = cowboy:start_tls(erlweb, TransOptsSsl, ProtoOpts);
+        _ -> {ok, _}	= cowboy:start_clear(erlweb, TransOpts, ProtoOpts)
     end,
 
     Session	= ?CHILD(erlweb_session_srv, worker),
-    {?ok, {{one_for_one, 10, 5}, [Session]} }.
+    {ok, {{one_for_one, 10, 5}, [Session]} }.
 
 
 
 routes(ArgMap, StaticDir, CustomRoutesTmp) ->
-    CustomRoutes = ?IF(CustomRoutesTmp =:= ?undefined, [], CustomRoutesTmp),
+    CustomRoutes = ?IF(CustomRoutesTmp =:= undefined, [], CustomRoutesTmp),
     [
         {'_', CustomRoutes ++ [
             {"/static/[...]",					cowboy_static,			{dir, StaticDir}},
             {"/[:app/[:module/[:func/[...]]]]",	erlweb_handler,		ArgMap}
-        ]
-        }
+        ]}
     ].
 
 
-get_options(ArgMap, Opts) ->
-    get_options(ArgMap, Opts, []).
+get_options(ArgMap, Opts) -> get_options(ArgMap, Opts, []).
 
-get_options(_ArgMap, [], OptDatas) ->
-    lists:reverse(OptDatas);
+get_options(_ArgMap, [], OptDatas) -> lists:reverse(OptDatas);
 get_options(ArgMap, [Opt|Opts], OptDatas) ->
     OptData = maps:get(Opt, ArgMap, ?undefined),
     get_options(ArgMap, Opts, [OptData|OptDatas]).
 
-check_module(ArgMap, []) ->
-    ArgMap;
+check_module(ArgMap, []) -> ArgMap;
 check_module(ArgMap, [{Key,Default}|Values]) ->
     case maps:get(Key, ArgMap, ?undefined) of
-        ?undefined ->
-            check_module(ArgMap#{Key=>Default},Values);
+        undefined -> check_module(ArgMap#{Key=>Default},Values);
         Module ->
             case erlweb_dispatch:load_module(Module) of
-                ?true ->
-                    check_module(ArgMap,Values);
-                ?false ->
-                    check_module(ArgMap#{Key=>Default},Values)
+                true -> check_module(ArgMap,Values);
+                false -> check_module(ArgMap#{Key=>Default},Values)
             end
     end.

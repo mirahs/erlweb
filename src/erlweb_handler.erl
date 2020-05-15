@@ -3,14 +3,14 @@
 -include("common.hrl").
 
 -export([
-		 init/2
-		]).
+	init/2
+]).
 
 
-init(Req, #{apps:=Apps,session_apps:=SessionApps,dispatcher:=Dispatcher} = Opt) ->
-	AppB= cowboy_req:binding(app, Req),
+init(Req, State = #{apps := Apps, session_apps := SessionApps, dispatcher := Dispatcher}) ->
+	AppB = cowboy_req:binding(app, Req),
 	case lists:member(AppB, Apps) of
-		?true ->
+		true ->
 			Path	= cowboy_req:path(Req),
 			Method	= cowboy_req:method(Req),
 			ModuleB	= cowboy_req:binding(module, Req),
@@ -18,20 +18,19 @@ init(Req, #{apps:=Apps,session_apps:=SessionApps,dispatcher:=Dispatcher} = Opt) 
 
 			Req2 = ?IF(lists:member(AppB, SessionApps), erlweb_session:on_request(Req), Req),
 			case Dispatcher:get(Path, AppB, ModuleB, FuncB) of
-				{?ok, PH} ->
+				{ok, PH} ->
 					try
-						handle_do(Method, Req2, Opt, PH)
+						handle_do(Method, Req2, State, PH)
 					catch
 						Error:Reason ->
 							?ERR("Path:~p, PH:~p, Error:~p, Reason:~p,~nStackTrace:~p", [Path,PH,Error,Reason,erlang:get_stacktrace()]),
-							erlweb_handler_error:error_out(Req2, Opt)
+							erlweb_handler_error:error_out(Req2, State)
 					end;
-				{?error, UrlNoAccess} ->
+				{error, UrlNoAccess} ->
 					Req3 = cowboy_req:reply(303, [{<<"location">>, ?TOB(UrlNoAccess)}], <<>>, Req2),
-					{?ok, Req3, Opt}
+					{ok, Req3, State}
 			end;
-		?false ->
-			erlweb_handler_error:error_out(Req, Opt)
+		false -> erlweb_handler_error:error_out(Req, State)
 	end.
 
 
@@ -89,8 +88,8 @@ handle_do_error(Req, Opts, Msg, Url) ->
 	Req2	= cowboy_req:reply(200, #{<<"refresh">> => <<"0;url=\"", ?B(Url), "\"">>, <<"content-type">> => <<"text/html; charset=utf-8">>}, Content, Req),
 	{?ok, Req2, Opts}.
 
-handle_do_redirect(Req, Opts) ->
-	handle_do_redirect(Req, Opts, cowboy_req:path(Req)).
-handle_do_redirect(Req, Opts, Url) ->
+handle_do_redirect(Req, State) ->
+	handle_do_redirect(Req, State, cowboy_req:path(Req)).
+handle_do_redirect(Req, State, Url) ->
 	Req2= cowboy_req:reply(303, #{<<"location">> => ?TOB(Url)}, <<>>, Req),
-	{?ok, Req2, Opts}.
+	{ok, Req2, State}.
