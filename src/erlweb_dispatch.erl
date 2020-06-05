@@ -1,19 +1,18 @@
 -module(erlweb_dispatch).
 
--include("common.hrl").
-
 -export([
 	get/4,
 	load_module/1
 ]).
 
+-include("common.hrl").
 
-get(Path, AppB, undefined, _FuncB) ->
-	get(Path, AppB, <<"index">>, <<"index">>);
-get(Path, AppB, ModuleB, undefined) ->
-	get(Path, AppB, ModuleB, <<"index">>);
-get(Path, AppB, ModuleB, FuncB) ->
-	{ok, set(Path, AppB, ModuleB, FuncB)}.
+
+get(Path = <<"/favicon.ico">>, _AppB, _ModuleB, _FuncB) -> {error, Path};
+get(Path, undefined, _ModuleB, _FuncB) -> get(Path, <<"index">>, <<"index">>, <<"index">>);
+get(Path, AppB, undefined, _FuncB) -> get(Path, AppB, <<"index">>, <<"index">>);
+get(Path, AppB, ModuleB, undefined) -> get(Path, AppB, ModuleB, <<"index">>);
+get(Path, AppB, ModuleB, FuncB) -> {ok, set(Path, AppB, ModuleB, FuncB)}.
 
 load_module(Module) ->
 	case erlang:module_loaded(Module) of

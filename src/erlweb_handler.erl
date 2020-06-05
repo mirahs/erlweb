@@ -1,13 +1,13 @@
 -module(erlweb_handler).
 
--include("common.hrl").
-
 -export([
 	init/2
 ]).
 
+-include("common.hrl").
 
-init(Req, #{session_apps := SessionApps, dispatcher := Dispatcher} = Opt) ->
+
+init(Req, #{session_apps := SessionApps, dispatcher := Dispatcher} = State) ->
 	AppB	= cowboy_req:binding(app, Req),
 	Path	= cowboy_req:path(Req),
 	Method	= cowboy_req:method(Req),
@@ -18,15 +18,16 @@ init(Req, #{session_apps := SessionApps, dispatcher := Dispatcher} = Opt) ->
 	case Dispatcher:get(Path, AppB, ModuleB, FuncB) of
 		{?ok, PH} ->
 			try
-				handle_do(Method, Req2, Opt, PH)
+				handle_do(Method, Req2, State, PH)
 			catch
 				Error:Reason ->
 					?ERR("Path:~p, PH:~p, Error:~p, Reason:~p,~nStackTrace:~p", [Path,PH,Error,Reason,erlang:get_stacktrace()]),
-					erlweb_handler_error:error_out(Req2, Opt)
+					erlweb_handler_error:error_out(Req2, State)
 			end;
+		{error, Path = <<"/favicon.ico">>} -> erlweb_handler_error:error_out(Req2, State, <<"get ", Path/bitstring, " file.">>);
 		{?error, UrlNoAccess} ->
 			Req3 = cowboy_req:reply(303, [{<<"location">>, ?TOB(UrlNoAccess)}], <<>>, Req2),
-			{?ok, Req3, Opt}
+			{?ok, Req3, State}
 	end.
 
 
