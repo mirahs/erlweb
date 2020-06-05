@@ -22,6 +22,7 @@
 
 
 execute(Req, Env) ->?INFO("on request"),
+    ?INFO("cowboy_req:match_cookies:~p", [cowboy_req:match_cookies([?SESSION_COOKIE_ATOM], Req)]),
     case cowboy_req:match_cookies([?SESSION_COOKIE_ATOM], Req) of
         #{session_cookie := SessionId} when SessionId =/= <<"">> ->
             SessionData	= erlweb_session_srv:session_get(SessionId),
