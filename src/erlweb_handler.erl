@@ -22,6 +22,7 @@ init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionA
 					?ERR("Path:~p, PH:~p, Error:~p, Reason:~p,~nStackTrace:~p", [Path,PH,Error,Reason,erlang:get_stacktrace()]),
 					erlweb_handler_error:error_out(Req2, State)
 			end;
+		{error, Path = <<"/favicon.ico">>} -> erlweb_handler_error:error_out(Req2, State, <<"get ", Path/bitstring, " file.">>);
 		{error, UrlNoAccess} ->
 			Req3 = cowboy_req:reply(303, [{<<"location">>, ?TOB(UrlNoAccess)}], <<>>, Req2),
 			{ok, Req3, State}
