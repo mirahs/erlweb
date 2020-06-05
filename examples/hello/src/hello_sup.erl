@@ -15,7 +15,7 @@ start_link() ->
 
 
 init([]) ->
-	MapArg = erlweb:init(1111),
+	MapArg = erlweb:init_session(1111, cp),
 	ErlWeb = ?CHILD(erlweb_sup, supervisor, [MapArg]),
 
 	Strategy = {one_for_one, 10, 1},

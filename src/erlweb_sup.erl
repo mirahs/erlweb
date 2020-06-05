@@ -28,9 +28,8 @@ init([ArgMap2]) ->
     Dispatch	= cowboy_router:compile(Routes),
     TransOpts	= [{port, Port}],
     ProtoOpts	= #{
-        env =>			#{dispatch => Dispatch},
-        onrequest =>  	fun erlweb_session:on_request/1,
-        onresponse => 	fun erlweb_session:on_response/4
+        env =>			#{dispatch => Dispatch}
+        ,middlewares => [cowboy_router, erlweb_session, cowboy_handler]
     },
     case SslOpen of
         true ->
