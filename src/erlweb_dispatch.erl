@@ -9,6 +9,7 @@
 
 
 get(Path = <<"/favicon.ico">>, _AppB, _ModuleB, _FuncB) -> {error, Path};
+get(Path, undefined, _ModuleB, _FuncB) -> get(Path, <<"index">>, <<"index">>, <<"index">>);
 get(Path, AppB, undefined, _FuncB) -> get(Path, AppB, <<"index">>, <<"index">>);
 get(Path, AppB, ModuleB, undefined) -> get(Path, AppB, ModuleB, <<"index">>);
 get(Path, AppB, ModuleB, FuncB) -> {ok, set(Path, AppB, ModuleB, FuncB)}.
