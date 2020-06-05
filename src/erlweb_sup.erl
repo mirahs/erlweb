@@ -22,7 +22,7 @@ start_link(ArgMap) ->
 init([ArgMap2]) ->
     ArgMap 		= check_module(ArgMap2, [{dispatcher,erlweb_dispatch}]),
 
-    [Port,Acceptors,StaticDir,CustomRoutes,SslOpen,SslCertFile,SslKeyFile] = get_options(ArgMap, [port,acceptors,static_dir,custom_routes,ssl_open,ssl_certfile,ssl_keyfile]),
+    [Port,StaticDir,CustomRoutes,SslOpen,SslCertFile,SslKeyFile] = get_options(ArgMap, [port,static_dir,custom_routes,ssl_open,ssl_certfile,ssl_keyfile]),
 
     Routes		= routes(ArgMap, StaticDir, CustomRoutes),
     Dispatch	= cowboy_router:compile(Routes),

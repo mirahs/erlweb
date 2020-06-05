@@ -7,28 +7,24 @@
 ]).
 
 
-init(Req = #{path := Path, method := Method}, State = #{apps := Apps, session_apps := SessionApps, dispatcher := Dispatcher}) ->
+init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionApps, dispatcher := Dispatcher}) ->
 	AppB = cowboy_req:binding(app, Req),
-	case lists:member(AppB, Apps) of
-		true ->
-			ModuleB	= cowboy_req:binding(module, Req),
-			FuncB	= cowboy_req:binding(func, Req),
+	ModuleB	= cowboy_req:binding(module, Req),
+	FuncB	= cowboy_req:binding(func, Req),
 
-			Req2 = ?IF(lists:member(AppB, SessionApps), erlweb_session:on_request(Req), Req),
-			case Dispatcher:get(Path, AppB, ModuleB, FuncB) of
-				{ok, PH} ->
-					try
-						handle_do(Method, Req2, State, PH)
-					catch
-						Error:Reason ->
-							?ERR("Path:~p, PH:~p, Error:~p, Reason:~p,~nStackTrace:~p", [Path,PH,Error,Reason,erlang:get_stacktrace()]),
-							erlweb_handler_error:error_out(Req2, State)
-					end;
-				{error, UrlNoAccess} ->
-					Req3 = cowboy_req:reply(303, [{<<"location">>, ?TOB(UrlNoAccess)}], <<>>, Req2),
-					{ok, Req3, State}
+	Req2 = ?IF(lists:member(AppB, SessionApps), erlweb_session:on_request(Req), Req),
+	case Dispatcher:get(Path, AppB, ModuleB, FuncB) of
+		{ok, PH} ->
+			try
+				handle_do(Method, Req2, State, PH)
+			catch
+				Error:Reason ->
+					?ERR("Path:~p, PH:~p, Error:~p, Reason:~p,~nStackTrace:~p", [Path,PH,Error,Reason,erlang:get_stacktrace()]),
+					erlweb_handler_error:error_out(Req2, State)
 			end;
-		false -> erlweb_handler_error:error_out(Req, State)
+		{error, UrlNoAccess} ->
+			Req3 = cowboy_req:reply(303, [{<<"location">>, ?TOB(UrlNoAccess)}], <<>>, Req2),
+			{ok, Req3, State}
 	end.
 
 
