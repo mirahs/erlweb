@@ -10,15 +10,15 @@
 
 
 init(Port) ->
-    init(Port, [], "", [], undefined, false, "", "").
+    init(Port, []).
 
 init(Port, CustomRoutes) ->
-    init(Port, CustomRoutes, "", [], undefined, false, "", "").
+    init(Port, CustomRoutes, "", [], undefined).
 
 init_session(Port, SessionApps = [_|_]) ->
-    init(Port, [], "", SessionApps, undefined, false, "", "");
+    init(Port, [], "", SessionApps, undefined);
 init_session(Port, SessionApps) ->
-    init(Port, [], "", [SessionApps], undefined, false, "", "").
+    init(Port, [], "", [SessionApps], undefined).
 
 init(Port, CustomRoutes, StaticDir, SessionApps, Dispatcher) ->
     init(Port, CustomRoutes, StaticDir, SessionApps, Dispatcher, false, "", "").

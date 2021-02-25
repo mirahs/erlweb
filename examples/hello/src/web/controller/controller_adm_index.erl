@@ -1,10 +1,11 @@
--module(controller_cp_index).
+-module(controller_adm_index).
 
+-compile(nowarn_export_all).
 -compile(export_all).
 
 
 index(_Method, _Req, _OPts) ->
-    {output, "hello,from controller_cp_index:index"}.
+    {output, "hello,from controller_adm_index:index"}.
 
 test(_Method, _Req, _OPts) ->
     {output, "This is a test!"}.

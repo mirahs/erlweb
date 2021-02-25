@@ -10,5 +10,9 @@ rel/example_project
 .rebar
 .settings
 .project
-.idea
 *.iml
+
+
+# create by mirahs
+/.idea/workspace.xml
+/.idea/libraries/
