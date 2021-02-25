@@ -18,6 +18,7 @@
 -define(CONST_DAY_MILLISECONDS, 		86400000).
 %% 0000到1970年的秒数
 -define(DIFF_SECONDS_0000_1900, 		62167219200).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 数据类型与常量
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,16 +63,6 @@
 -define(string, 				string).     %% 短字符串(小于256)
 -define(stringl, 				string_long).%% 长字符串(小于65536)
 
--define(tip, 					tip).	 	 %% tip
 
-
-%% 转二进制 简写
-
-%% 语言包参数转换
--define(LANG(Tran, Args),		io_lib:format(Tran, Args)).
 %% 函数封装
--define(TRY_FAST(B,T), 			try (B) catch _:_ -> (T) end).
--define(TRY_DO(B), 				try (B) catch Error:Reason -> ?MSG_ECHO("Error:~p, ~nReason:~p, ~nStackTrace:~p", [Error,Reason,erlang:get_stacktrace()]) end).
--define(TRY_DO(B,R),			try (B) catch Error:Reason -> ?MSG_ECHO("Error:~p, ~nReason:~p, ~nStackTrace:~p", [Error,Reason,erlang:get_stacktrace()]), R end).
--define(TRY_DO_WEB(B,Path,E), 	try (B) catch Error:Reason -> ?MSG_ECHO("Path:~p, Error:~p, Reason:~p,~nStackTrace:~p", [Path,Error,Reason,erlang:get_stacktrace()]), (E) end).
 -define(IF(B,T,F), 				case (B) of ?true -> (T); ?false -> (F) end).

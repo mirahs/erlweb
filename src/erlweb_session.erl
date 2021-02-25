@@ -53,11 +53,11 @@ on_response(Req) ->%?INFO("on response"),
 
 %% API
 get(Key) ->
-    ?MODULE:get(Key, ?undefined).
+    ?MODULE:get(Key, undefined).
 
 get(Key, DefaultValue) ->
     case erlang:get(Key) of
-        ?undefined ->
+        undefined ->
             DefaultValue;
         Value ->
             Value

@@ -1,10 +1,12 @@
 <component name="ProjectDictionaryState">
   <dictionary name="Administrator">
     <words>
+      <w>datas</w>
       <w>deps</w>
       <w>ebin</w>
       <w>erlang</w>
       <w>erlweb</w>
+      <w>erlydtl</w>
       <w>escript</w>
       <w>noaccess</w>
       <w>rebar</w>

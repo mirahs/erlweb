@@ -1,10 +1,10 @@
 -module(erlweb_handler).
 
--include("common.hrl").
-
 -export([
     init/2
 ]).
+
+-include("common.hrl").
 
 
 init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionApps, dispatcher := Dispatcher}) ->
@@ -20,72 +20,78 @@ init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionA
                 {ok, Req3, State2}
             catch
                 Error:Reason ->
-                    ?ERR("Path:~p, PH:~p, Error:~p, Reason:~p,~nStackTrace:~p", [Path,PH,Error,Reason,erlang:get_stacktrace()]),
-                    erlweb_handler_error:error_out(Req, State)
+                    ?ERR("Path:~p, PH:~p, Error:~p,~nReason:~n~p,~nStackTrace:~n~p", [Path, PH, Error, Reason, erlang:get_stacktrace()]),
+                    error_out(Req, State)
             end;
-        {error, Path = <<"/favicon.ico">>} -> erlweb_handler_error:error_out(Req, State, <<"get ", Path/bitstring, " file.">>);
+        {error, Path = <<"/favicon.ico">>} ->
+            error_out(Req, State, <<"get ", Path/bitstring, " file.">>);
         {error, UrlNoAccess} ->
-            Req3 = cowboy_req:reply(303, [{<<"location">>, ?TOB(UrlNoAccess)}], <<>>, Req),
-            {ok, Req3, State}
+            handle_do_redirect(Req, State, UrlNoAccess)
     end.
 
 
-handle_do(Method, Req, Opts, #{controller:=ModuleA,func:=FuncA,dtl:=DtlA,dtle:=DtlEditA}) ->
-    try ModuleA:FuncA(Method, Req, Opts) of
+handle_do(Method, Req, State, #{controller := Module, func := Func, dtl := Dtl, dtle := DtlEdit}) ->
+    try Module:Func(Method, Req, State) of
         {output, Content} ->
             Req2 = cowboy_req:reply(200, #{<<"content-type">> => <<"text/plain; charset=utf-8">>}, Content, Req),
-            {?ok, Req2, Opts};
+            {ok, Req2, State};
         {output, Content, Req1, Opts1} ->
             Req2 = cowboy_req:reply(200, #{<<"content-type">> => <<"text/plain;charset=utf-8">>}, Content, Req1),
-            {?ok, Req2, Opts1};
-        {?ok, dtl} ->
-            handle_do_dtl(Req, Opts, DtlA, []);
-        {?ok, dtl_edit} ->
-            handle_do_dtl(Req, Opts, DtlEditA, []);
-        {?ok, dtl, DtlKeyValues} ->
-            handle_do_dtl(Req, Opts, DtlA, DtlKeyValues);
-        {?ok, dtl_edit, DtlKeyValues} ->
-            handle_do_dtl(Req, Opts, DtlEditA, DtlKeyValues);
+            {ok, Req2, Opts1};
+        {ok, dtl} ->
+            handle_do_dtl(Req, State, Dtl, []);
+        {ok, dtl_edit} ->
+            handle_do_dtl(Req, State, DtlEdit, []);
+        {ok, dtl, DtlKeyValues} ->
+            handle_do_dtl(Req, State, Dtl, DtlKeyValues);
+        {ok, dtl_edit, DtlKeyValues} ->
+            handle_do_dtl(Req, State, DtlEdit, DtlKeyValues);
         {json, JsonData} ->
             Req1 = cowboy_req:reply(200, #{<<"content-type">> => <<"text/json;charset=utf-8">>}, JsonData, Req),
-            {?ok, Req1, Opts};
+            {ok, Req1, State};
         redirect ->
-            handle_do_redirect(Req, Opts);
+            handle_do_redirect(Req, State);
         {redirect, Url} ->
-            handle_do_redirect(Req, Opts, Url);
+            handle_do_redirect(Req, State, Url);
         {redirect, Url, Req2} ->
-            handle_do_redirect(Req2, Opts, Url);
-        {?ok, Req1, Opts1} ->
-            {?ok, Req1, Opts1};
-        {?error, Msg} ->
-            handle_do_error(Req, Opts, Msg);
-        {?error, Msg, Url} ->
-            handle_do_error(Req, Opts, Msg, Url)
+            handle_do_redirect(Req2, State, Url);
+        {ok, Req1, Opts1} ->
+            {ok, Req1, Opts1};
+        {error, Msg} ->
+            handle_do_error(Req, State, Msg);
+        {error, Msg, Url} ->
+            handle_do_error(Req, State, Msg, Url)
     catch
-        error:{error, Msg} -> handle_do_error(Req, Opts, Msg);
-        error:{error, Msg, Url} -> handle_do_error(Req, Opts, Msg, Url);
-        error:redirect -> handle_do_redirect(Req, Opts);
-        error:{redirect, Url} -> handle_do_redirect(Req, Opts, Url)
+        error:{error, Msg} -> handle_do_error(Req, State, Msg);
+        error:{error, Msg, Url} -> handle_do_error(Req, State, Msg, Url);
+        error:redirect -> handle_do_redirect(Req, State);
+        error:{redirect, Url} -> handle_do_redirect(Req, State, Url)
     end.
 
 
 handle_do_dtl(Req, Opts, DtlA, DtlKeyValues) ->
-    {?ok, Html} = DtlA:render(DtlKeyValues),
+    {ok, Html} = DtlA:render(DtlKeyValues),
     Req3 = cowboy_req:reply(200, #{<<"content-type">> => <<"text/html;charset=utf-8">>}, Html, Req),
-    {?ok, Req3, Opts}.
+    {ok, Req3, Opts}.
 
 handle_do_error(Req, Opts, Msg) ->
     handle_do_error(Req, Opts, Msg, cowboy_req:path(Req)).
 handle_do_error(Req, Opts, Msg, Url) ->
-    MsgB	= erlweb_util:to_binary(Msg),
-    Content = <<"<script type=\"text/javascript\">alert('", MsgB/binary ,"');</script>">>,
-    %PathB	= {<<"refresh">>, <<"0;url=\"", ?B(Url), "\"">>},
-    %Req2	= cowboy_req:reply(200, [PathB, {<<"content-type">>, <<"text/html; charset=utf-8">>}], Content, Req),
+    Content = <<"<script type=\"text/javascript\">alert('", ?B(Msg) ,"');</script>">>,
     Req2	= cowboy_req:reply(200, #{<<"refresh">> => <<"0;url=\"", ?B(Url), "\"">>, <<"content-type">> => <<"text/html; charset=utf-8">>}, Content, Req),
-    {?ok, Req2, Opts}.
+    {ok, Req2, Opts}.
 
 handle_do_redirect(Req, State) ->
     handle_do_redirect(Req, State, cowboy_req:path(Req)).
 handle_do_redirect(Req, State, Url) ->
-    Req2= cowboy_req:reply(303, #{<<"location">> => ?TOB(Url)}, <<>>, Req),
+    Req2 = cowboy_req:reply(303, #{<<"location">> => ?TOB(Url)}, <<>>, Req),
+    {ok, Req2, State}.
+
+
+error_out(Req, State) ->
+    Req2 = cowboy_req:reply(500, #{<<"content-type">> => <<"text/plain;charset=utf-8">>}, <<"request failed, sorry\n">>, Req),
+    {ok, Req2, State}.
+
+error_out(Req, State, Content) ->
+    Req2 = cowboy_req:reply(500, #{<<"content-type">> => <<"text/plain;charset=utf-8">>}, Content, Req),
     {ok, Req2, State}.

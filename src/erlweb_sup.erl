@@ -2,8 +2,6 @@
 
 -behaviour(supervisor).
 
--include("common.hrl").
-
 -export([
     start_link/1
 ]).
@@ -12,23 +10,29 @@
     init/1
 ]).
 
+-include("common.hrl").
+
 -define(CHILD(I, Type), {I, {I, start_link, []}, permanent, 5000, Type, [I]}).
 
+
+%%%===================================================================
+%%% API
+%%%===================================================================
 
 start_link(ArgMap) ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, [ArgMap]).
 
 
 init([ArgMap2]) ->
-    ArgMap 		= check_module(ArgMap2, [{dispatcher,erlweb_dispatch}]),
+    ArgMap 		= check_module(ArgMap2, [{dispatcher, erlweb_dispatch}]),
 
-    [Port,StaticDir,CustomRoutes,SslOpen,SslCertFile,SslKeyFile] = get_options(ArgMap, [port,static_dir,custom_routes,ssl_open,ssl_certfile,ssl_keyfile]),
+    [Port, StaticDir, CustomRoutes, SslOpen, SslCertFile, SslKeyFile] = get_options(ArgMap, [port, static_dir, custom_routes, ssl_open, ssl_certfile, ssl_keyfile]),
 
     Routes		= routes(ArgMap, StaticDir, CustomRoutes),
     Dispatch	= cowboy_router:compile(Routes),
     TransOpts	= [{port, Port}],
     ProtoOpts	= #{
-        env =>			#{dispatch => Dispatch}
+        env => #{dispatch => Dispatch}
         ,middlewares => [cowboy_router, erlweb_session, cowboy_handler]
     },
     case SslOpen of
@@ -42,6 +46,9 @@ init([ArgMap2]) ->
     {ok, {{one_for_one, 10, 5}, [Session]} }.
 
 
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
 
 routes(ArgMap, StaticDir, CustomRoutesTmp) ->
     CustomRoutes = ?IF(CustomRoutesTmp =:= undefined, [], CustomRoutesTmp),
@@ -56,17 +63,17 @@ routes(ArgMap, StaticDir, CustomRoutesTmp) ->
 get_options(ArgMap, Opts) -> get_options(ArgMap, Opts, []).
 
 get_options(_ArgMap, [], OptDatas) -> lists:reverse(OptDatas);
-get_options(ArgMap, [Opt|Opts], OptDatas) ->
-    OptData = maps:get(Opt, ArgMap, ?undefined),
+get_options(ArgMap, [Opt | Opts], OptDatas) ->
+    OptData = maps:get(Opt, ArgMap, undefined),
     get_options(ArgMap, Opts, [OptData|OptDatas]).
 
 check_module(ArgMap, []) -> ArgMap;
-check_module(ArgMap, [{Key,Default}|Values]) ->
-    case maps:get(Key, ArgMap, ?undefined) of
-        undefined -> check_module(ArgMap#{Key=>Default},Values);
+check_module(ArgMap, [{Key, Default} | Values]) ->
+    case maps:get(Key, ArgMap, undefined) of
+        undefined -> check_module(ArgMap#{Key => Default}, Values);
         Module ->
-            case erlweb_dispatch:load_module(Module) of
-                true -> check_module(ArgMap,Values);
-                false -> check_module(ArgMap#{Key=>Default},Values)
+            case erlweb_util:load_module(Module) of
+                true -> check_module(ArgMap, Values);
+                false -> check_module(ArgMap#{Key => Default}, Values)
             end
     end.
