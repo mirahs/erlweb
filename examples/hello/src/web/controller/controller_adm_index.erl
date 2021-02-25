@@ -5,7 +5,7 @@
 
 
 index(_Method, _Req, _OPts) ->
-    {output, "hello,from controller_adm_index:index"}.
+    {output, "Hello from controller_adm_index:index"}.
 
 test(_Method, _Req, _OPts) ->
     {output, "This is a test!"}.
