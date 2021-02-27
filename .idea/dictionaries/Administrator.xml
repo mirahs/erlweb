@@ -8,7 +8,10 @@
       <w>erlweb</w>
       <w>erlydtl</w>
       <w>escript</w>
+      <w>mnesia</w>
       <w>noaccess</w>
+      <w>priv</w>
+      <w>readlink</w>
       <w>rebar</w>
       <w>sasl</w>
       <w>werl</w>
