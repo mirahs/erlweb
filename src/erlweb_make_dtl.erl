@@ -9,11 +9,11 @@
 
 %% erl -pa deps/erlweb/ebin deps/erlydtl/ebin -s erlweb_make_dtl -s init stop -extra ./src/web/view
 %% erl -pa deps/erlweb/ebin deps/erlydtl/ebin -s erlweb_make_dtl -s init stop -extra ./src/web/view ./ebin
-%% erl -pa deps/erlweb/ebin deps/erlydtl/ebin -s erlweb_make_dtl -s init stop -extra ./src/web/view ./ebin  web_custom_tag
+%% erl -pa deps/erlweb/ebin deps/erlydtl/ebin -s erlweb_make_dtl -s init stop -extra ./src/web/view ./ebin  web_erlydtl_tag
 start() ->
     case init:get_plain_arguments() of
         [] ->
-            make("./src/templates", "./ebin", undefined);
+            make("./src/web/view", "./ebin", undefined);
         [Dir] ->
             make(Dir, "./ebin", undefined);
         [Dir, OutDir] ->
@@ -24,7 +24,7 @@ start() ->
 
 
 make(Dir, OutDir, CustomTags) ->
-    CompileArgs = ?IF(CustomTags =:= undefined, [{out_dir,OutDir}], [{out_dir,OutDir},{custom_tags_modules,[CustomTags]}]),
+    CompileArgs = ?IF(CustomTags =:= undefined, [{out_dir, OutDir}], [{out_dir, OutDir}, {custom_tags_modules, [CustomTags]}]),
     {ok, FileList} = file:list_dir(Dir),
     Fun = fun
               (FileBaseName) ->
@@ -33,7 +33,7 @@ make(Dir, OutDir, CustomTags) ->
                       _ ->
                           FileName = Dir ++ "/" ++ FileBaseName,
                           case filelib:is_file(FileName) of
-                              ?true ->
+                              true ->
                                   case filename:extension(FileBaseName) of
                                       ".html" ->
                                           RootName	= filename:rootname(FileBaseName),
