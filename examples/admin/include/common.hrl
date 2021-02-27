@@ -26,14 +26,13 @@
 -define(ERR(F, A),  catch logger:error(F, A, ?MODULE, ?LINE)).
 
 
-%%----------------------------------------------------
-%% 配置
-%%----------------------------------------------------
+%%%===================================================================
+%%% 配置
+%%%===================================================================
 
 %% 目录
--define(DIR_ROOT, 					"./").
--define(DIR_CONF, 					?DIR_ROOT ++ "conf/").
--define(DIR_PRIV, 					?DIR_ROOT ++ "priv/").
+-define(DIR_ROOT,   "./").
+-define(DIR_PRIV,   ?DIR_ROOT ++ "priv/").
 
 
 %% MySQL 数据库 ID
@@ -41,24 +40,24 @@
 -define(db_log,		db_log).
 
 
-%%----------------------------------------------------
-%% 数据类型与常量
-%%----------------------------------------------------
+%%%===================================================================
+%%% 数据类型与常量
+%%%===================================================================
 
 %% 时间
--define(DATE_SECONDS, 86400).
--define(DATE_MS, 86400000).
--define(HOUR_SECONDS, 3600).
--define(HOUR_MS, 3600000).
+-define(DATE_SECONDS,   86400).
+-define(DATE_MS,        86400000).
+-define(HOUR_SECONDS,   3600).
+-define(HOUR_MS,        3600000).
 
-%% 数字型的bool值
--define(false, 0).
+%% 数字型 bool 值
 -define(true, 1).
+-define(false, 0).
 
 
-%%----------------------------------------------------
-%% 函数封装
-%%----------------------------------------------------
+%%%===================================================================
+%%% 函数封装
+%%%===================================================================
 
 %% 转二进制 简写
 -define(B(D),   (util:to_binary(D))/binary  ).
@@ -85,16 +84,3 @@
             {false, err_server_busy};
         Rtn -> Rtn
     end).
-
-%% record转成kv形式
--ifdef(debug).
--define(record_kv(Record, Name), lists:zip(record_info(fields, Name), tl(tuple_to_list(Record)))).
--else.
--define(record_kv(Record, Name), Record).
--endif.
-
-%% 检查数字Num第Pos位是否为1 1:true|0:false
--define(CHECK_BIT(Pos, Num),    ((1 bsl (Pos -1)) band Num) =/= 0   ).
-
-%% 数字Num第Pos位改为1
--define(ADD_BIT(Pos, Num),  Num bor (1 bsl (Pos - 1))   ).

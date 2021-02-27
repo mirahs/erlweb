@@ -1,3 +1,4 @@
+%% -*- coding: latin-1 -*-
 -module(erlweb_make_dtl).
 
 -export([

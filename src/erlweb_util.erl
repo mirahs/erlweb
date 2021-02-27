@@ -1,3 +1,4 @@
+%% -*- coding: latin-1 -*-
 -module(erlweb_util).
 
 -export([
@@ -98,7 +99,7 @@ load_module(Module) ->
             code:purge(Module),
             case code:load_file(Module) of
                 {module, Module} -> true;
-                {?error, Reason} ->
+                {error, Reason} ->
                     ?ERR("(~p) load fail : ~p~n", [Module, Reason]),
                     false
             end

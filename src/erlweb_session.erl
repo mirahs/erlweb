@@ -1,3 +1,4 @@
+%% -*- coding: latin-1 -*-
 -module(erlweb_session).
 
 -export([
@@ -81,7 +82,7 @@ del(Key) ->
     erlang:put(?SESSION_KEYS, lists:delete(Key, Keys)).
 
 destory(Req) ->
-    SessionId = session_id(Req, ?false),
+    SessionId = session_id(Req, false),
     del(),
     erlweb_session_srv:session_destory(SessionId),
     cowboy_req:set_resp_cookie(?SESSION_COOKIE, <<"">>, Req, #{path => <<"/">>}).

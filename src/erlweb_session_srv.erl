@@ -1,3 +1,4 @@
+%% -*- coding: latin-1 -*-
 -module(erlweb_session_srv).
 
 -include("common.hrl").
@@ -53,12 +54,12 @@ init([]) ->
 	ets:new(?MODULE, [set,public,named_table,{keypos,#session.sid}]),
 	{A1, A2, A3} = os:timestamp(),
 	random:seed(A1,A2,A3),
-	{?ok, ?null}.
+	{ok, null}.
 
 
 handle_call(session_new, _From, State) ->
 	Sid	= make_session(),
-	{?reply, Sid, State};
+	{reply, Sid, State};
 
 handle_call({session_get, Sid}, _From, State) ->
 	Data = case ets:lookup(?MODULE, Sid) of
@@ -67,28 +68,28 @@ handle_call({session_get, Sid}, _From, State) ->
 			   [] ->
 				   []
 		   end,
-	{?reply, Data, State}.
+	{reply, Data, State}.
 
 
 handle_cast({session_set, Sid, Data}, State) ->
 	ets:insert(?MODULE, #session{sid=Sid,data=Data,ttl=0}),
-	{?noreply, State};
+	{noreply, State};
 
 handle_cast({session_destory, Sid}, State) ->
 	ets:delete(?MODULE, Sid),
-	{?noreply, State}.
+	{noreply, State}.
 
 
 handle_info(_Info, State) ->
-	{?noreply, State}.
+	{noreply, State}.
 
 
 terminate(_Reason, _State) ->
-	?ok.
+	ok.
 
 
 code_change(_OldVsn, State, _Extra) ->
-	{?ok, State}.
+	{ok, State}.
 
 
 %%--------------------------------------------------------------------
