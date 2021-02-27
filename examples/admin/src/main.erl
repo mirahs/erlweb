@@ -1,4 +1,4 @@
--module(admin).
+-module(main).
 
 -export([
 	start/0
@@ -11,4 +11,5 @@ start() ->
 	ok.
 
 stop() ->
-	application:stop(admin).
+	application:stop(admin),
+	erlang:halt().

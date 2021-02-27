@@ -12,3 +12,7 @@ rel/example_project
 .project
 .idea
 *.iml
+
+
+# create by mirahs
+/var/

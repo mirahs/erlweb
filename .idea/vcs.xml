@@ -7,9 +7,5 @@
     <mapping directory="$PROJECT_DIR$/examples/admin/deps/erlweb" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/examples/admin/deps/erlydtl" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/examples/admin/deps/ranch" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/examples/hello/deps/cowboy" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/examples/hello/deps/cowlib" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/examples/hello/deps/erlweb" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/examples/hello/deps/ranch" vcs="Git" />
   </component>
 </project>
