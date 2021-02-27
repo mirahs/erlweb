@@ -1,3 +1,4 @@
+%% -*- coding: latin-1 -*-
 -module(admin_app).
 
 -behaviour(application).
@@ -7,6 +8,10 @@
 	,stop/1
 ]).
 
+
+%%%===================================================================
+%%% API
+%%%===================================================================
 
 start(_StartType, _StartArgs) ->
 	case init:get_plain_arguments() of

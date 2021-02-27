@@ -1,3 +1,4 @@
+%% -*- coding: latin-1 -*-
 -module(controller_adm_index).
 
 -compile(nowarn_export_all).

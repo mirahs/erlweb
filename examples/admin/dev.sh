@@ -11,7 +11,7 @@ fun_dev()
 {
 	cd ${DIR_ROOT}
 	rm -rf ebin
-	#rebar g-d #第一次编译注释要取消(获取依赖)
+	#./rebar g-d #第一次编译注释要取消(获取依赖)
 	./rebar -D debug co
 }
 
@@ -19,7 +19,7 @@ fun_rel()
 {
 	cd ${DIR_ROOT}
 	rm -rf ebin
-	#rebar g-d #第一次编译注释要取消(获取依赖)
+	#./rebar g-d #第一次编译注释要取消(获取依赖)
 	./rebar co
 }
 
@@ -61,4 +61,5 @@ then
 else
 	fun_$1 $*
 fi
+
 exit 0
