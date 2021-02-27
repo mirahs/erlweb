@@ -2,7 +2,13 @@
 	[
 		{description,	"admin"},
 		{vsn, 			"1.0"},
-		{applications,	[kernel, stdlib, erlweb]},
+		{applications,	[
+			kernel
+			,stdlib
+
+			,sasl
+			,erlweb
+		]},
 		{mod,			{admin_app, []}}
 	]
 }.
