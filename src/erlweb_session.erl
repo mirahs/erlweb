@@ -15,7 +15,7 @@
     destory/1
 ]).
 
--include("common.hrl").
+-include("erlweb.hrl").
 
 -define(SESSION_KEYS,			session_keys).
 -define(SESSION_COOKIE,			<<"session_cookie">>).

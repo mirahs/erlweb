@@ -5,7 +5,7 @@
     init/2
 ]).
 
--include("common.hrl").
+-include("erlweb.hrl").
 
 
 init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionApps, dispatcher := Dispatcher}) ->

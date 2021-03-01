@@ -5,7 +5,7 @@
     get/4
 ]).
 
--include("common.hrl").
+-include("erlweb.hrl").
 
 
 get(Path = <<"/favicon.ico">>, _AppB, _ModuleB, _FuncB) -> {error, Path};

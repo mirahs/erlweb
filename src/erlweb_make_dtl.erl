@@ -5,7 +5,7 @@
     start/0
 ]).
 
--include("common.hrl").
+-include("erlweb.hrl").
 
 
 %% erl -pa deps/erlweb/ebin deps/erlydtl/ebin -s erlweb_make_dtl -s init stop -extra ./src/web/view

@@ -1,8 +1,6 @@
 %% -*- coding: latin-1 -*-
 -module(erlweb_session_srv).
 
--include("common.hrl").
-
 -behaviour(gen_server).
 
 -export([
@@ -22,6 +20,8 @@
 	terminate/2,
 	code_change/3
 ]).
+
+-include("erlweb.hrl").
 
 -record(session, {sid,data,ttl}).
 

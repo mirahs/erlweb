@@ -11,7 +11,7 @@
     init/1
 ]).
 
--include("common.hrl").
+-include("erlweb.hrl").
 
 -define(CHILD(I, Type), {I, {I, start_link, []}, permanent, 5000, Type, [I]}).
 
