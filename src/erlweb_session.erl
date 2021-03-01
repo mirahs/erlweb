@@ -22,7 +22,7 @@
 -define(SESSION_COOKIE_ATOM,	session_cookie).
 
 
-execute(Req, Env = #{handler_opts => #{session_apps => SessionApps}}) ->
+execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
     AppBTmp = cowboy_req:binding(app, Req),
     AppB    = ?IF(AppBTmp =:= undefined, <<"index">>, AppBTmp),
     case lists:member(AppB, SessionApps) of
