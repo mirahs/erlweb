@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=7" />
+
+    <link type="text/css" href="{{ base.static_url }}cp/admincp.css?t3p" rel="stylesheet" />
+    <link type="text/css" href="{{ base.static_url }}css/app.css?t3p" rel="stylesheet" />
+
+  	<script type="text/javascript" src="{{ base.static_url }}cp/js/common.js?t3p"></script>
+  	<script type="text/javascript" src="{{ base.static_url }}cp/js/admincp.js?t3p"></script>
+  	<script type="text/javascript" src="{{ base.static_url }}js/app.js?t3p"></script>
+  	<script type="text/javascript">
+  		parent.init_page('{{ base.title }}', '{{ base.title_sub }}');
+  	</script>
+
+    {% block header_css %}
+    {% endblock %}
+    {% block header_js %}
+	  {% endblock %}
+</head>
+<body>
+
+{% block body %}
+这是基本模板
+{% endblock %}
+
+
+{% block body_js %}
+{% endblock %}
+
+</body>
+</html>

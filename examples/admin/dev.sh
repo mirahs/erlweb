@@ -13,6 +13,10 @@ fun_dev()
 	rm -rf ebin
 	./rebar g-d
 	./rebar -D debug co
+
+	echo 编译模板开始
+	erl -pa ${BEAM} -noshell -s erlweb_make_dtl -s c q -extra ./src/web/view ./ebin web_erlydtl_tag
+	echo 编译模板完成
 }
 
 fun_rel()
@@ -21,6 +25,10 @@ fun_rel()
 	rm -rf ebin
 	./rebar g-d
 	./rebar co
+
+	echo 编译模板开始
+    erl -pa ${BEAM} -noshell -s erlweb_make_dtl -s c q -extra ./src/web/view ./ebin web_erlydtl_tag
+    echo 编译模板完成
 }
 
 
@@ -31,7 +39,7 @@ fun_start()
     dirVar='var/'
     mkdir -p ${dirVar}
 
-    werl -pa ${BEAM} -hidden -name admin@127.0.0.1 -config ./elog +P 1024000 -s main start -extra ${dirVar} &
+    werl -pa ${BEAM} -name admin@127.0.0.1 -config ./elog +P 1024000 -s main start -extra ${dirVar} &
 }
 
 fun_stop()
