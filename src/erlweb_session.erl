@@ -28,20 +28,19 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
     AppB    = ?IF(AppBTmp =:= undefined, <<"index">>, AppBTmp),
     case lists:member(AppB, SessionApps) of
         true ->
-            ?INFO("on request"),
             erlang:erase(?dict_session_id),
             case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
                 #{session_cookie := SessionId} when SessionId =/= <<"">> ->
                     SessionData	= erlweb_session_srv:session_get(SessionId),
-                    ?INFO("SessionId:~p", [SessionId]),
-                    ?INFO("SessionData:~p", [SessionData]),
+                    %?INFO("SessionId:~p", [SessionId]),
+                    %?INFO("SessionData:~p", [SessionData]),
                     [erlang:put(Key, Value) || {Key, Value} <- SessionData],
                     erlang:put(?dict_session_id, SessionId),
                     erlang:put(?dict_session_keys, [Key || {Key, _Data} <- SessionData]),
                     {ok, Req, Env};
                 _ ->
                     SessionId = session_id(Req),
-                    ?INFO("SessionId:~p", [SessionId]),
+                    %?INFO("SessionId:~p", [SessionId]),
                     erlang:put(?dict_session_id, SessionId),
                     erlang:put(?dict_session_keys, []),
                     Req2 = cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, Req, #{path => <<"/">>}),
@@ -51,10 +50,10 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
     end.
 
 %% 返回前调用
-on_response(Req) ->?INFO("on response"),
+on_response(Req) ->
     case erlang:get(?dict_session_id) of
-        undefined -> ?INFO("on response skip"),skip;
-        SessionId ->?INFO("on response SessionId:~p", [SessionId]), session_set(SessionId)
+        undefined -> skip;
+        SessionId -> session_set(SessionId)
     end,
     Req.
 
@@ -117,5 +116,5 @@ session_id(Req, false) ->
 
 session_set(SessionId) ->
     SessionKeys	= erlang:get(?dict_session_keys),
-    SessionData	= [{Key, erlang:get(Key)} || Key <- SessionKeys],?INFO("SessionData:~p", [SessionData]),
+    SessionData	= [{Key, erlang:get(Key)} || Key <- SessionKeys],%?INFO("SessionData:~p", [SessionData]),
     erlweb_session_srv:session_set(SessionId, SessionData).
