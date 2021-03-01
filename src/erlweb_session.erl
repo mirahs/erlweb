@@ -27,7 +27,7 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
     AppB    = ?IF(AppBTmp =:= undefined, <<"index">>, AppBTmp),
     case lists:member(AppB, SessionApps) of
         true ->
-            ?INFO("~n"),?INFO("on request Env:~p", [Env]),
+            ?INFO("~n"),?INFO("on request"),
             case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
                 #{session_cookie := SessionId} when SessionId =/= <<"">> ->
                     SessionData	= erlweb_session_srv:session_get(SessionId),

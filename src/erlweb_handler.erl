@@ -32,7 +32,6 @@ init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionA
     end.
 
 terminate(_Reason, _Req, _State) ->
-    ?INFO("handler terminate"),
     ok.
 
 
