@@ -27,7 +27,7 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
     AppB    = ?IF(AppBTmp =:= undefined, <<"index">>, AppBTmp),
     case lists:member(AppB, SessionApps) of
         true ->
-            ?INFO("~n"),?INFO("on request"),
+            ?INFO("on request"),
             case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
                 #{session_cookie := SessionId} when SessionId =/= <<"">> ->
                     SessionData	= erlweb_session_srv:session_get(SessionId),
@@ -47,13 +47,13 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
     end.
 
 %% 返回前调用
-on_response(Req) ->?INFO("~n"),?INFO("on response"),
+on_response(Req) ->?INFO("on response"),
     case erlang:get(?SESSION_KEYS) of
         undefined -> ?INFO("on response"),skip;
         _ ->
             case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
                 #{session_cookie := SessionId} when SessionId =/= <<"">> ->?INFO("on response SessionId:~p", [SessionId]),session_set(SessionId);
-                _ -> ?INFO("on response"),skip
+                _XX -> ?INFO("on response _XX:~p", [_XX]),skip
             end
     end,
     Req.
