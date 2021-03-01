@@ -22,7 +22,7 @@
 -define(SESSION_COOKIE_ATOM,	session_cookie).
 
 
-execute(Req, Env) ->?INFO("on request"),
+execute(Req, Env) ->?INFO("~non request"),
     case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
         #{session_cookie := SessionId} when SessionId =/= <<"">> ->
             SessionData	= erlweb_session_srv:session_get(SessionId),
@@ -40,7 +40,7 @@ execute(Req, Env) ->?INFO("on request"),
     end.
 
 %% 返回前调用
-on_response(Req) ->?INFO("on response"),
+on_response(Req) ->?INFO("~non response"),
     case erlang:get(?SESSION_KEYS) of
         undefined -> ?INFO("on response"),skip;
         _ ->
