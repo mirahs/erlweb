@@ -42,7 +42,7 @@ error(Msg) ->
 error(Format, Args) ->
 	?MODULE:error(Format, Args, null, null).
 error(Format, Args, Mod, Line) ->
-	Msg = format("erlweb  error", Format, Args, Mod, Line),
+	Msg = format("erlweb error", Format, Args, Mod, Line),
 	io:format("~ts", [Msg]).
 
 
