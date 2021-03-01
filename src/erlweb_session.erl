@@ -19,8 +19,8 @@
 
 -define(dict_session_id,        dict_session_id).
 -define(dict_session_keys,		dict_session_keys).
--define(cookie_session_id,		<<"erlwebid">>).
--define(cookie_session_id_atom,	erlwebid).
+-define(cookie_session_id,		<<"cookie_session_id">>).
+-define(cookie_session_id_atom,	cookie_session_id).
 
 
 execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
