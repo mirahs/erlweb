@@ -22,31 +22,31 @@
 -define(SESSION_COOKIE_ATOM,	session_cookie).
 
 
-execute(Req, Env) ->%?INFO("on request"),
+execute(Req, Env) ->?INFO("on request"),
     case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
         #{session_cookie := SessionId} when SessionId =/= <<"">> ->
             SessionData	= erlweb_session_srv:session_get(SessionId),
-            %?INFO("SessionId : ~p~n", [SessionId]),
-            %?INFO("SessionData : ~p~n", [SessionData]),
+            ?INFO("SessionId:~p", [SessionId]),
+            ?INFO("SessionData:~p", [SessionData]),
             [erlang:put(Key, Value) || {Key, Value} <- SessionData],
             erlang:put(?SESSION_KEYS, [Key || {Key, _Data} <- SessionData]),
             {ok, Req, Env};
         _ ->
             SessionId = session_id(Req),
-            %?INFO("SessionId : ~p~n", [SessionId]),
+            ?INFO("SessionId:~p", [SessionId]),
             erlang:put(?SESSION_KEYS, []),
             Req2 = cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, Req, #{path => <<"/">>}),
             {ok, Req2, Env}
     end.
 
 %% 返回前调用
-on_response(Req) ->%?INFO("on response"),
+on_response(Req) ->?INFO("on response"),
     case erlang:get(?SESSION_KEYS) of
-        undefined -> skip;
+        undefined -> ?INFO("on response"),skip;
         _ ->
             case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
-                #{session_cookie:=SessionId} when SessionId =/= <<"">> -> session_set(SessionId);
-                _ -> skip
+                #{session_cookie := SessionId} when SessionId =/= <<"">> ->?INFO("on response SessionId:~p", [SessionId]),session_set(SessionId);
+                _ -> ?INFO("on response"),skip
             end
     end,
     Req.
@@ -110,5 +110,5 @@ session_id(Req, false) ->
 
 session_set(SessionId) ->
     SessionKeys	= erlang:get(?SESSION_KEYS),
-    SessionData	= [{Key, erlang:get(Key)} || Key <- SessionKeys],
+    SessionData	= [{Key, erlang:get(Key)} || Key <- SessionKeys],?INFO("SessionData:~p", [SessionData]),
     erlweb_session_srv:session_set(SessionId, SessionData).
