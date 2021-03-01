@@ -30,9 +30,9 @@ init_session(Port, SessionApps) ->
     init(Port, [], "", [SessionApps], undefined).
 
 init(Port, CustomRoutes, StaticDir, SessionApps, Dispatcher) ->
-    init(Port, CustomRoutes, StaticDir, SessionApps, Dispatcher, false, "", "").
+    init(Port, CustomRoutes, StaticDir, SessionApps, Dispatcher, false, "", "", "").
 
-init(Port, CustomRoutes, StaticDir, SessionApps, Dispatcher, SslOpen, SslCertFile, SslKeyFile) ->
+init(Port, CustomRoutes, StaticDir, SessionApps, Dispatcher, SslOpen, SslCaCertFile, SslCertFile, SslKeyFile) ->
     #{
         port             => Port,
         custom_routes   => CustomRoutes,
@@ -43,12 +43,12 @@ init(Port, CustomRoutes, StaticDir, SessionApps, Dispatcher, SslOpen, SslCertFil
         dispatcher      => Dispatcher,
 
         ssl_open        => SslOpen,
+        ssl_cacertfile  => SslCaCertFile,
         ssl_certfile    => SslCertFile,
         ssl_keyfile     => SslKeyFile
     }.
 
 
 stop() ->
-    Res = cowboy:stop_listener(erlweb),
-    ?INFO("Res:~p", [Res]),
+    cowboy:stop_listener(erlweb),
     ok.

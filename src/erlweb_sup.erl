@@ -27,7 +27,7 @@ start_link(ArgMap) ->
 init([ArgMap2]) ->
     ArgMap 		= check_module(ArgMap2, [{dispatcher, erlweb_dispatch}]),
 
-    [Port, StaticDir, CustomRoutes, SslOpen, SslCertFile, SslKeyFile] = get_options(ArgMap, [port, static_dir, custom_routes, ssl_open, ssl_certfile, ssl_keyfile]),
+    [Port, StaticDir, CustomRoutes, SslOpen, SslCaCertFile, SslCertFile, SslKeyFile] = get_options(ArgMap, [port, static_dir, custom_routes, ssl_open, ssl_cacertfile, ssl_certfile, ssl_keyfile]),
 
     Routes		= routes(ArgMap, StaticDir, CustomRoutes),
     Dispatch	= cowboy_router:compile(Routes),
@@ -38,7 +38,7 @@ init([ArgMap2]) ->
     },
     case SslOpen of
         true ->
-            TransOptsSsl = [{certfile, SslCertFile}, {keyfile, SslKeyFile} | TransOpts],
+            TransOptsSsl = [{cacertfile, SslCaCertFile}, {certfile, SslCertFile}, {keyfile, SslKeyFile} | TransOpts],
             {ok, _} = cowboy:start_tls(erlweb, TransOptsSsl, ProtoOpts);
         _ -> {ok, _}	= cowboy:start_clear(erlweb, TransOpts, ProtoOpts)
     end,
