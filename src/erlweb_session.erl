@@ -19,8 +19,8 @@
 
 -define(dict_session_id,        dict_session_id).
 -define(dict_session_keys,		dict_session_keys).
--define(SESSION_COOKIE,			<<"session_cookie">>).
--define(SESSION_COOKIE_ATOM,	session_cookie).
+-define(cookie_session_id,		<<"cookie_session_id">>).
+-define(cookie_session_id_atom,	cookie_session_id).
 
 
 execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
@@ -30,7 +30,7 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
         true ->
             ?INFO("on request"),
             erlang:erase(?dict_session_id),
-            case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
+            case cowboy_req:match_cookies([{?cookie_session_id_atom, [], <<>>}], Req) of
                 #{session_cookie := SessionId} when SessionId =/= <<"">> ->
                     SessionData	= erlweb_session_srv:session_get(SessionId),
                     ?INFO("SessionId:~p", [SessionId]),
@@ -44,7 +44,7 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
                     ?INFO("SessionId:~p", [SessionId]),
                     erlang:put(?dict_session_id, SessionId),
                     erlang:put(?dict_session_keys, []),
-                    Req2 = cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, Req, #{path => <<"/">>}),
+                    Req2 = cowboy_req:set_resp_cookie(?cookie_session_id, SessionId, Req, #{path => <<"/">>}),
                     {ok, Req2, Env}
             end;
         false -> {ok, Req, Env}
@@ -92,7 +92,7 @@ destory(Req) ->
     SessionId = session_id(Req, false),
     del(),
     erlweb_session_srv:session_destory(SessionId),
-    cowboy_req:set_resp_cookie(?SESSION_COOKIE, <<"">>, Req, #{path => <<"/">>}).
+    cowboy_req:set_resp_cookie(?cookie_session_id, <<"">>, Req, #{path => <<"/">>}).
 
 
 
@@ -100,14 +100,14 @@ session_id(Req) ->
     session_id(Req, true).
 
 session_id(Req, true) ->
-    case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
+    case cowboy_req:match_cookies([{?cookie_session_id_atom, [], <<>>}], Req) of
         #{session_cookie:=SessionId} when SessionId =/= <<"">> ->
             ?TOB(SessionId);
         _ ->
             ?TOB(erlweb_session_srv:session_new())
     end;
 session_id(Req, false) ->
-    case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
+    case cowboy_req:match_cookies([{?cookie_session_id_atom, [], <<>>}], Req) of
         #{session_cookie:=SessionId} when SessionId =/= <<"">> ->
             ?TOB(SessionId);
         _ ->
