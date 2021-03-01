@@ -4,7 +4,7 @@
 -behaviour(gen_server).
 
 -export([
-	start_link/0,
+	start_link/0,make_session/0,
 
 	session_new/0,
 	session_get/1,
@@ -23,7 +23,7 @@
 
 -include("erlweb.hrl").
 
--record(session, {sid,data,ttl}).
+-record(session, {sid, data, ttl}).
 
 
 %%% API
@@ -52,8 +52,8 @@ session_destory(Sid) ->
 %%% Callbacks
 init([]) ->
 	ets:new(?MODULE, [set,public,named_table,{keypos,#session.sid}]),
-	{A1, A2, A3} = os:timestamp(),
-	random:seed(A1,A2,A3),
+%%	{A1, A2, A3} = os:timestamp(),
+%%	random:seed(A1,A2,A3),
 	{ok, null}.
 
 
