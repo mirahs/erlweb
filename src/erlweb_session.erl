@@ -17,7 +17,8 @@
 
 -include("erlweb.hrl").
 
--define(SESSION_KEYS,			session_keys).
+-define(dict_session_id,        dict_session_id).
+-define(dict_session_keys,		dict_session_keys).
 -define(SESSION_COOKIE,			<<"session_cookie">>).
 -define(SESSION_COOKIE_ATOM,	session_cookie).
 
@@ -28,18 +29,21 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
     case lists:member(AppB, SessionApps) of
         true ->
             ?INFO("on request"),
+            erlang:erase(?dict_session_id),
             case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
                 #{session_cookie := SessionId} when SessionId =/= <<"">> ->
                     SessionData	= erlweb_session_srv:session_get(SessionId),
                     ?INFO("SessionId:~p", [SessionId]),
                     ?INFO("SessionData:~p", [SessionData]),
                     [erlang:put(Key, Value) || {Key, Value} <- SessionData],
-                    erlang:put(?SESSION_KEYS, [Key || {Key, _Data} <- SessionData]),
+                    erlang:put(?dict_session_id, SessionId),
+                    erlang:put(?dict_session_keys, [Key || {Key, _Data} <- SessionData]),
                     {ok, Req, Env};
                 _ ->
                     SessionId = session_id(Req),
                     ?INFO("SessionId:~p", [SessionId]),
-                    erlang:put(?SESSION_KEYS, []),
+                    erlang:put(?dict_session_id, SessionId),
+                    erlang:put(?dict_session_keys, []),
                     Req2 = cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, Req, #{path => <<"/">>}),
                     {ok, Req2, Env}
             end;
@@ -48,13 +52,9 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
 
 %% 返回前调用
 on_response(Req) ->?INFO("on response"),
-    case erlang:get(?SESSION_KEYS) of
-        undefined -> ?INFO("on response"),skip;
-        _Keys ->?INFO("on response _Keys:~p", [_Keys]),
-            case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
-                #{session_cookie := SessionId} when SessionId =/= <<"">> ->?INFO("on response SessionId:~p", [SessionId]),session_set(SessionId);
-                _XX -> ?INFO("on response _XX:~p", [_XX]),skip
-            end
+    case erlang:get(?dict_session_id) of
+        undefined -> ?INFO("on response skip"),skip;
+        SessionId ->?INFO("on response SessionId:~p", [SessionId]), session_set(SessionId)
     end,
     Req.
 
@@ -73,20 +73,20 @@ get(Key, DefaultValue) ->
 
 set(Key, Value) ->
     erlang:put(Key, Value),
-    Keys = erlang:get(?SESSION_KEYS),
-    erlang:put(?SESSION_KEYS, [Key|lists:delete(Key, Keys)]).
+    Keys = erlang:get(?dict_session_keys),
+    erlang:put(?dict_session_keys, [Key|lists:delete(Key, Keys)]).
 
 set(KeyValues) ->
     [set(Key, Value) || {Key, Value} <- KeyValues].
 
 del() ->
-    Keys= erlang:get(?SESSION_KEYS),
+    Keys= erlang:get(?dict_session_keys),
     [del(Key) || Key <- Keys].
 
 del(Key) ->
     erlang:erase(Key),
-    Keys= erlang:get(?SESSION_KEYS),
-    erlang:put(?SESSION_KEYS, lists:delete(Key, Keys)).
+    Keys= erlang:get(?dict_session_keys),
+    erlang:put(?dict_session_keys, lists:delete(Key, Keys)).
 
 destory(Req) ->
     SessionId = session_id(Req, false),
@@ -116,6 +116,6 @@ session_id(Req, false) ->
 
 
 session_set(SessionId) ->
-    SessionKeys	= erlang:get(?SESSION_KEYS),
+    SessionKeys	= erlang:get(?dict_session_keys),
     SessionData	= [{Key, erlang:get(Key)} || Key <- SessionKeys],?INFO("SessionData:~p", [SessionData]),
     erlweb_session_srv:session_set(SessionId, SessionData).
