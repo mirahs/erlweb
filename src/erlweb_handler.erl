@@ -9,7 +9,7 @@
 -include("erlweb.hrl").
 
 
-init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionApps, dispatcher := Dispatcher}) ->?INFO("Path:~p", [Path]),
+init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionApps, dispatcher := Dispatcher}) ->
     AppB = cowboy_req:binding(app, Req),
     ModuleB	= cowboy_req:binding(module, Req),
     FuncB	= cowboy_req:binding(func, Req),
