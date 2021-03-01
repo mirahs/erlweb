@@ -1,0 +1,6 @@
+.container{ padding:9px 15px 15px; text-align:left; }
+
+.corepage {font:12px/16px arial; }
+.corepage span {float:left; margin:0px 3px; }
+.corepage a {float:left; margin:0 3px; border:1px solid #ddd; padding:3px 7px; text-decoration:none; color:#666; }
+.corepage a.now_page, #page a:hover{color:#fff; background:#05c; }
