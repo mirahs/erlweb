@@ -22,21 +22,28 @@
 -define(SESSION_COOKIE_ATOM,	session_cookie).
 
 
-execute(Req = #{path := Path}, Env) ->?INFO("~n"),?INFO("on request Env:~p", [Env]),
-    case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
-        #{session_cookie := SessionId} when SessionId =/= <<"">> ->
-            SessionData	= erlweb_session_srv:session_get(SessionId),
-            ?INFO("SessionId:~p", [SessionId]),
-            ?INFO("SessionData:~p", [SessionData]),
-            [erlang:put(Key, Value) || {Key, Value} <- SessionData],
-            erlang:put(?SESSION_KEYS, [Key || {Key, _Data} <- SessionData]),
-            {ok, Req, Env};
-        _ ->
-            SessionId = session_id(Req),
-            ?INFO("SessionId:~p", [SessionId]),
-            erlang:put(?SESSION_KEYS, []),
-            Req2 = cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, Req, #{path => <<"/">>}),
-            {ok, Req2, Env}
+execute(Req, Env = #{handler_opts => #{session_apps => SessionApps}}) ->
+    AppBTmp = cowboy_req:binding(app, Req),
+    AppB    = ?IF(AppBTmp =:= undefined, <<"index">>, AppBTmp),
+    case lists:member(AppB, SessionApps) of
+        true ->
+            ?INFO("~n"),?INFO("on request Env:~p", [Env]),
+            case cowboy_req:match_cookies([{?SESSION_COOKIE_ATOM, [], <<>>}], Req) of
+                #{session_cookie := SessionId} when SessionId =/= <<"">> ->
+                    SessionData	= erlweb_session_srv:session_get(SessionId),
+                    ?INFO("SessionId:~p", [SessionId]),
+                    ?INFO("SessionData:~p", [SessionData]),
+                    [erlang:put(Key, Value) || {Key, Value} <- SessionData],
+                    erlang:put(?SESSION_KEYS, [Key || {Key, _Data} <- SessionData]),
+                    {ok, Req, Env};
+                _ ->
+                    SessionId = session_id(Req),
+                    ?INFO("SessionId:~p", [SessionId]),
+                    erlang:put(?SESSION_KEYS, []),
+                    Req2 = cowboy_req:set_resp_cookie(?SESSION_COOKIE, SessionId, Req, #{path => <<"/">>}),
+                    {ok, Req2, Env}
+            end;
+        false -> {ok, Req, Env}
     end.
 
 %% 返回前调用
