@@ -24,4 +24,5 @@ start(_StartType, _StartArgs) ->
 	end.
 
 stop(_State) ->
+    erlweb:stop(),
 	ok.

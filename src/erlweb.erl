@@ -7,7 +7,11 @@
     ,init_session/2
     ,init/5
     ,init/8
+
+    ,stop/0
 ]).
+
+-include("erlweb.hrl").
 
 
 %%%===================================================================
@@ -42,3 +46,9 @@ init(Port, CustomRoutes, StaticDir, SessionApps, Dispatcher, SslOpen, SslCertFil
         ssl_certfile    => SslCertFile,
         ssl_keyfile     => SslKeyFile
     }.
+
+
+stop() ->
+    Res = cowboy:stop_listener(erlweb),
+    ?INFO("Res:~p", [Res]),
+    ok.

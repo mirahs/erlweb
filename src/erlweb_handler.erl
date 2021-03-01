@@ -3,6 +3,7 @@
 
 -export([
     init/2
+    ,terminate/3
 ]).
 
 -include("erlweb.hrl").
@@ -29,6 +30,10 @@ init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionA
         {error, UrlNoAccess} ->
             handle_do_redirect(Req, State, UrlNoAccess)
     end.
+
+terminate(_Reason, _Req, _State) ->
+    ?INFO("handler terminate"),
+    ok.
 
 
 handle_do(Method, Req, State, #{controller := Module, func := Func, dtl := Dtl, dtle := DtlEdit}) ->
