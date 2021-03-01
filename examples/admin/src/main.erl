@@ -12,9 +12,9 @@
 %%%===================================================================
 
 start() ->
-	{ok, _} = application:ensure_all_started(admin),
+	{ok, _} = application:ensure_all_started(app),
 	ok.
 
 stop() ->
-	application:stop(admin),
+	application:stop(app),
 	erlang:halt().

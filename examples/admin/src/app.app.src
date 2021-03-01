@@ -1,6 +1,6 @@
-{application, admin,
+{application, app,
 	[
-		{description,	"admin"},
+		{description,	"admin app"},
 		{vsn, 			"1.0"},
 		{applications,	[
 			kernel
@@ -9,6 +9,6 @@
 			,sasl
 			,erlweb
 		]},
-		{mod,			{admin_app, []}}
+		{mod,			{app_app, []}}
 	]
 }.

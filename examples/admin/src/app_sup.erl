@@ -1,5 +1,5 @@
 %% -*- coding: latin-1 -*-
--module(admin_sup).
+-module(app_sup).
 
 -behaviour(supervisor).
 
