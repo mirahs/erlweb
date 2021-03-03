@@ -39,6 +39,7 @@ fun_start()
     dirVar='var/'
     mkdir -p ${dirVar}
 
+    #erl -pa ${BEAM} -name admin@127.0.0.1 -config ./elog +P 1024000 -s main start -extra ${dirVar}
     werl -pa ${BEAM} -name admin@127.0.0.1 -config ./elog +P 1024000 -s main start -extra ${dirVar} &
 }
 

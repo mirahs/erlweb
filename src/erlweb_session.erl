@@ -47,7 +47,9 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
                     {ok, Req2, Env}
             end;
         false -> {ok, Req, Env}
-    end.
+    end;
+execute(Req, Env) ->
+    {ok, Req, Env}.
 
 %% 返回前调用
 on_response(Req) ->
