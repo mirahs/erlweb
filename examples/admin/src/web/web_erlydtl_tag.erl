@@ -1,10 +1,11 @@
 -module(web_erlydtl_tag).
 
 -export([
-	web_static_url/1
+    web_project_name/1
+    ,web_static_url/1
 
-	,ymdhis/1
-	,ymd/1
+    ,ymdhis/1
+    ,ymd/1
 ]).
 
 -include("web.hrl").
@@ -14,22 +15,26 @@
 %%% API
 %%%===================================================================
 
+%% web 项目名称
+web_project_name(_Args) ->
+    ?web_project_name.
+
 %% web 资源地址
 web_static_url(_Args) ->
-	?web_static_url.
+    ?web_static_url.
 
 
 %% 格式化时间
 ymdhis([Seconds]) when is_integer(Seconds) andalso Seconds > 0 ->
-	date_YmdHis(Seconds);
+    date_YmdHis(Seconds);
 ymdhis(_Args) ->
-	"1970-01-01 00:00:00".
+    "1970-01-01 00:00:00".
 
 %% 格式化日期
 ymd([Seconds]) when is_integer(Seconds) andalso Seconds > 0 ->
-	util:date_YmdE(Seconds);
+    util:date_YmdE(Seconds);
 ymd(_Args) ->
-	"1970-01-01".
+    "1970-01-01".
 
 
 %%%===================================================================
@@ -37,5 +42,5 @@ ymd(_Args) ->
 %%%===================================================================
 
 date_YmdHis(Seconds) ->
-	{{Y,M,D}, {H,I,S}} = util:seconds2localtime(Seconds),
-	util:to_list(Y) ++ "-" ++ util:date_format(M) ++ "-" ++ util:date_format(D) ++ " " ++ util:date_format(H) ++ ":" ++  util:date_format(I) ++ ":" ++ util:date_format(S).
+    {{Y,M,D}, {H,I,S}} = util:seconds2localtime(Seconds),
+    util:to_list(Y) ++ "-" ++ util:date_format(M) ++ "-" ++ util:date_format(D) ++ " " ++ util:date_format(H) ++ ":" ++  util:date_format(I) ++ ":" ++ util:date_format(S).
