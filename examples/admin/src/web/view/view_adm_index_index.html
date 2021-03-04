@@ -13,7 +13,6 @@
 
     <style type="text/css">
         .layui-layout-admin .layui-right-head{ position: fixed; left: 200px; right: 0; top: 60px; bottom: 0; height: 32px; line-height: 32px; padding: 0 10px; background-color: #eee }
-        .mi-side-layui-nav-item { } /* 左侧所有菜单全部展开开 */
     </style>
 </head>
 
@@ -45,11 +44,11 @@
             <ul id="menu_{{ menu.code }}" style="display: none" class="layui-nav layui-nav-tree" lay-filter="test">
                 {% for sub in menu.sub %}
                 {% if sub.code_sub %}
-                <li class="layui-nav-item mi-side-layui-nav-item">
+                <li class="layui-nav-item layui-nav-itemed">
                     <a href="{{ sub.url }}" target="main">{{ sub.name }}</a>
                 </li>
                 {% else %}
-                <li class="layui-nav-item mi-side-layui-nav-item">
+                <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:">{{ sub.name }}</a>
                     {% for subSub in sub.data %}
                     <dl class="layui-nav-child">
@@ -122,11 +121,6 @@
         // 显示顶部第一个菜单
         const firstHeader = $('#topmenu>li>a:first');
         firstHeader.parent().addClass('layui-this');
-
-        // 左侧菜单全部展开开
-        $('.mi-side-layui-nav-item').each(function() {
-            $(this).addClass('layui-nav-itemed');
-        });
 
         // 显示顶部菜单的左侧菜单
         const firstHeaderKey = firstHeader[0].id.substr('header_'.length);
