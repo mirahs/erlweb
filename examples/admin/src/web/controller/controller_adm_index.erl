@@ -27,7 +27,6 @@ index(_Method, _Req, _OPts) ->
         false -> {redirect, "/adm/login"}
     end.
 
-
 %% 登陆
 login(?web_get, Req, _Opts) ->
     case web_adm:check_login() of
@@ -40,3 +39,7 @@ login(?web_post, Req, _Opts) ->
         {ok} -> {json, web:echo_success()};
         {error, ErrorMsg} -> {json, web:echo_failed(ErrorMsg)}
     end.
+
+%% 无权限访问
+noaccess(_Method, _Req, _Opts) ->
+    {ok, dtl, [{account, web_adm:get_account()}]}.
