@@ -24,7 +24,7 @@
         <ul id="topmenu" class="layui-nav layui-layout-left">
             {% for menu in menus %}
             <li class="layui-nav-item">
-                <a href="javascript:" id="header_{{ menu.code }}" onclick="toggleHeader('{{ menu.code }}', '{{ menu.name }}');">{{ menu.name }}</a>
+                <a href="javascript:" id="header_{{ menu.code }}" onclick="toggleHeader('{{ menu.code }}');">{{ menu.name }}</a>
             </li>
             {% endfor %}
         </ul>
@@ -45,14 +45,14 @@
                 {% for sub in menu.sub %}
                 {% if sub.code_sub %}
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a href="{{ sub.url }}" target="main">{{ sub.name }}</a>
+                    <a href="javascript:" onclick="toggleItem('{{ sub.name }}', '{{ sub.url }}', '{{ menu.name }}');">{{ sub.name }}</a>
                 </li>
                 {% else %}
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:">{{ sub.name }}</a>
                     {% for subSub in sub.data %}
                     <dl class="layui-nav-child">
-                        <dd><a href="{{ subSub.url }}" target="main">{{ subSub.name }}</a></dd>
+                        <dd><a href="javascript:" onclick="toggleItem('{{ subSub.name }}', '{{ subSub.url }}', '{{ menu.name }}');">{{ subSub.name }}</a></dd>
                     </dl>
                     {% endfor %}
                 </li>
@@ -96,15 +96,14 @@
     }
 
     // 点击上方菜单切换左侧菜单
-    function toggleHeader(key, name) {
+    function toggleHeader(key) {
         if (!key || !$('#header_' + key) || !$('#menu_' + key)) return;
 
-        showSideBar(key, name);
+        showSideBar(key);
     }
 
     // 显示左侧菜单
-    function showSideBar(key, name) {
-        console.log('showSideBar key:', key, ',name:', name);
+    function showSideBar(key) {
         // 隐藏所有左侧菜单
         $('.layui-nav-tree').each(function() {
             $(this).css('display', 'none');
@@ -121,8 +120,13 @@
         } else {
             item = firstSideBarItem.children('li>a:first');
         }
-        showTitle(name, item.text());
-        $('#main').attr('src', item.attr('href'));
+        item.addClass('layui-this');
+        item.click();
+    }
+
+    function toggleItem(name, url, headerName) {
+        showTitle(headerName, name);
+        $('#main').attr('src', url);
     }
 
     function init() {
@@ -132,8 +136,7 @@
 
         // 显示顶部菜单的左侧菜单
         const firstHeaderKey = firstHeader[0].id.substr('header_'.length);
-        console.log('firstHeader:', firstHeader);
-        showSideBar(firstHeaderKey, firstHeader.text());
+        showSideBar(firstHeaderKey);
     }
 
 
