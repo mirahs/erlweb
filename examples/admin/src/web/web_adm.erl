@@ -72,7 +72,7 @@ get_type() ->
 get_type_name() ->
     get_type_name(get_type()).
 get_type_name(Type) ->
-    maps:get(?adm_user_types_desc, Type, "").
+    maps:get(Type, ?adm_user_types_desc, "").
 
 
 %%%===================================================================

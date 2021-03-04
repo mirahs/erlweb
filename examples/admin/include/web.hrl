@@ -6,7 +6,7 @@
 
 -define(web_port,           	    1111).                      % web 端口
 
--define(web_project_name,			"《干货悦读》").		    % 项目名称
+-define(web_project_name,			"干货悦读").		        % 项目名称
 -define(web_powered_corp_name,		"干货科技").			    % 公司名称
 -define(web_powered_corp_url,		"http://www.gank.top").		% 公司官网
 -define(web_powered_studio_name,	"干货悦读").			    % 工作室名称

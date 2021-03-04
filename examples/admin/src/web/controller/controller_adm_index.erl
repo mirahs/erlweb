@@ -14,14 +14,15 @@ index(_Method, _Req, _OPts) ->
         true ->
             %Type = web_cp:get_type(),
             Type = ?adm_user_type_admin,
-            {_Menus, _PurviewKeys} = web_adm_menu:menus(Type),
+            {Menus, MenuHeaders} = web_adm_menu:menus(Type),
             {ok, dtl, [
-%%                {project_name,	?PROJECT_NAME},
-%%                {static_url, 	?STATIC_URL},
-%%                {admin_name,	maps:get(Type, ?CP_PURVIEW_LIST)},
-%%                {account,		web_cp:get_account()},
-%%                {purview_keys,	PurviewKeys},
-%%                {menus,			Menus}
+                {web_project_name, ?web_project_name}
+
+                ,{menus, Menus}
+                ,{menu_headers, MenuHeaders}
+
+                ,{account, web_adm:get_account()}
+                ,{user_type_name, web_adm:get_type_name()}
             ]};
         false -> {redirect, "/adm/login"}
     end.

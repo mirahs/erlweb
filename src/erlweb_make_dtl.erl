@@ -30,7 +30,7 @@ make(Dir, OutDir, CustomTags) ->
     Fun = fun
               (FileBaseName) ->
                   case FileBaseName of
-                      "base.html" -> ok;
+                      "view_base.html" -> ok;
                       _ ->
                           FileName = Dir ++ "/" ++ FileBaseName,
                           case filelib:is_file(FileName) of
@@ -40,7 +40,12 @@ make(Dir, OutDir, CustomTags) ->
                                           RootName	= filename:rootname(FileBaseName),
                                           RootNameA	= ?TOA(RootName),
                                           %?INFO("FileName : ~p RootNameA : ~p Opts : ~p~n", [FileName, RootNameA, Opts]),
-                                          erlydtl:compile_file(FileName, RootNameA, CompileArgs);
+                                          case erlydtl:compile_file(FileName, RootNameA, CompileArgs) of
+                                              {ok, _} -> skip;
+                                              error -> ?ERR("compile [~s] error", [FileBaseName]);
+                                              {error, Errors, Warnings} ->
+                                                  ?ERR("compile [~s] Errors:~p,Warnings:~p", [Errors, Warnings])
+                                          end;
                                       _ -> skip
                                   end;
                               _ -> skip

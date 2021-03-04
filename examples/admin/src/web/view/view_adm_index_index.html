@@ -1,1 +1,137 @@
-主页面
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后! -->
+
+    <title>《{{ web_project_name }}》管理中心</title>
+    <link rel="icon" href="{% web_static_url %}favicon.ico">
+
+    <link rel="stylesheet" href="{% web_static_url %}layui/css/layui.css">
+
+    <style type="text/css">
+        .layui-layout-admin .layui-right-head{ position: fixed; left: 200px; right: 0; top: 60px; bottom: 0; height: 32px; line-height: 32px; padding: 0 10px; background-color: #eee }
+        .mi-side-layui-nav-item { } /* 左侧所有菜单全部展开开 */
+    </style>
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">{{ web_project_name }}</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul id="topmenu" class="layui-nav layui-layout-left">
+            {% for menu in menus %}
+            <li class="layui-nav-item">
+                <a href="javascript:" id="header_{{ menu.code }}" hidefocus="true" onclick="toggleMenu('{{ menu.code }}');">{{ menu.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <p>您好, {{ user_type_name }} <em>{{ account }}</em></p>
+            </li>
+            <li class="layui-nav-item"><a href="logout">退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            {% for menu in menus %}
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul id="menu_{{ menu.code }}" style="display: none" class="layui-nav layui-nav-tree" lay-filter="test">
+                {% for sub in menu.sub %}
+                {% if sub.code_sub %}
+                <li class="layui-nav-item mi-side-layui-nav-item">
+                    <a href="{{ sub.url }}" target="main">{{ sub.name }}</a>
+                </li>
+                {% else %}
+                <li class="layui-nav-item mi-side-layui-nav-item">
+                    <a class="" href="javascript:">{{ sub.name }}</a>
+                    {% for subSub in sub.data %}
+                    <dl class="layui-nav-child">
+                        <dd><a href="{{ subSub.url }}" target="main">{{ subSub.name }}</a></dd>
+                    </dl>
+                    {% endfor %}
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="layui-right-head">
+        <!-- 顶部固定区域 -->
+        <!-- © layui.com - 顶部固定区域 -->
+        <p id="admincpnav"></p>
+    </div>
+
+    <div class="layui-body" style="top: 92px; overflow: hidden;">
+        <!-- 内容主体区域 -->
+        <iframe id="main" name="main" width="100%" height="100%" frameborder="0"></iframe>
+    </div>
+
+    <!--    <div class="layui-footer">-->
+    <!--        <!-- 底部固定区域 -->-->
+    <!--        <!-- © layui.com - 底部固定区域 -->-->
+    <!--        <p>京公网安备11000002000001号</p>-->
+    <!--    </div>-->
+</div>
+
+
+<script src="{% web_static_url %}js/jquery.min.js"></script>
+<script src="{% web_static_url %}layui/layui.js"></script>
+
+<script type="text/javascript">
+    layui.use('element', function () { });
+
+
+    // 点击上方菜单切换左侧菜单
+    function toggleMenu(key, url) {
+        if (!key || !$('#header_' + key) || !$('#menu_' + key)) return;
+
+        showSideBar(key, url);
+    }
+
+    // 显示左侧菜单
+    function showSideBar(key, url) {
+        //显示属于被点击的顶部菜单按钮的左侧菜单
+        $('.layui-nav-tree').each(function() {
+            $(this).css('display', 'none');
+        });
+        $('#menu_' + key).css('display', '');
+
+        // //显示左侧菜单第一个链接
+        // var firstSideBarItem = $('#menu_' + key + '>li:first');
+        // if (firstSideBarItem.is(':has(dl)')) {
+        //     $('#main').attr('src', firstSideBarItem.find('dl>dd>a:first').attr('href'));
+        // } else {
+        //     $('#main').attr('src', firstSideBarItem.children('li>a:first').attr('href'));
+        // }
+        if (url) $('#main').attr('src', url);
+    }
+
+    // 初始化菜单和子页面
+    function init() {
+        const firstHeader = $('#topmenu>li>a:first');
+        firstHeader.parent().addClass('layui-this');
+
+        // 左侧所有菜单全部展开开
+        $('.mi-side-layui-nav-item').each(function() {
+            $(this).addClass('layui-nav-itemed');
+        });
+
+        // 显示顶部菜单的左侧菜单
+        const firstHeaderKey = firstHeader[0].id.substr('header_'.length);
+        showSideBar(firstHeaderKey);
+    }
+
+    init();
+</script>
+
+</body>
+</html>

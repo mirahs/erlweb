@@ -42,8 +42,8 @@ menu_check(Path, Code, CodeSub) ->
 %% 根据账号类型得到原始菜单数据
 menus(UserType) ->
     [{UserType, Menus}] = ets:lookup(?ets_web_menu_data, UserType),
-    MenuHeaderCodes	= menu_header_codes(Menus),
-    {Menus, MenuHeaderCodes}.
+    MenuHeaders	= menu_headers(Menus),
+    {Menus, MenuHeaders}.
 
 
 %%%===================================================================
@@ -51,7 +51,7 @@ menus(UserType) ->
 %%%===================================================================
 
 %% 头部菜单数据
-menu_header_codes(Menus) ->
+menu_headers(Menus) ->
     jsx:encode([Code || #{code := Code} <- Menus]).
 
 %% 检查菜单权限
