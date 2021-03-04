@@ -43,6 +43,13 @@ fun_start()
     werl -pa ${BEAM} -name admin@127.0.0.1 -config ./elog +P 1024000 -s main start -extra ${dirVar} &
 }
 
+fun_up()
+{
+	cd ${DIR_ROOT}
+
+    erl -pa ${BEAM} -name admin_up@127.0.0.1 -noshell -eval "rpc:call('admin@127.0.0.1', sys_code, up, []), erlang:halt()."
+}
+
 fun_stop()
 {
     cd ${DIR_ROOT}
@@ -57,6 +64,7 @@ fun_help()
     echo "rel                   正式版"
 
 	echo "start                 启动服务器"
+	echo "up                    热更服务器"
 	echo "stop                  关闭服务器"
 
     exit 1

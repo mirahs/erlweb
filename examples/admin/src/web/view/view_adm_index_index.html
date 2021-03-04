@@ -25,7 +25,7 @@
         <ul id="topmenu" class="layui-nav layui-layout-left">
             {% for menu in menus %}
             <li class="layui-nav-item">
-                <a href="javascript:" id="header_{{ menu.code }}" hidefocus="true" onclick="toggleMenu('{{ menu.code }}');">{{ menu.name }}</a>
+                <a href="javascript:" id="header_{{ menu.code }}" hidefocus="true" onclick="toggleHeader('{{ menu.code }}');">{{ menu.name }}</a>
             </li>
             {% endfor %}
         </ul>
@@ -91,7 +91,7 @@
 
 
     // 点击上方菜单切换左侧菜单
-    function toggleMenu(key) {
+    function toggleHeader(key) {
         if (!key || !$('#header_' + key) || !$('#menu_' + key)) return;
 
         showSideBar(key);
@@ -99,10 +99,11 @@
 
     // 显示左侧菜单
     function showSideBar(key) {
-        //显示属于被点击的顶部菜单按钮的左侧菜单
+        // 隐藏所有左侧菜单
         $('.layui-nav-tree').each(function() {
             $(this).css('display', 'none');
         });
+        // 显示被点击顶部的左侧菜单
         $('#menu_' + key).css('display', '');
 
         //显示左侧菜单第一个链接
