@@ -18,7 +18,7 @@
 %% web 资源地址
 -define(web_static_url,				"/static/").
 %% 无权限提示
--define(web_noaccess_url,		    "/adm/index/noaccess").
+-define(web_noaccess_url,		    "/adm/noaccess").
 
 
 %%%===================================================================

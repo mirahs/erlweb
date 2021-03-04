@@ -22,7 +22,7 @@ init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionA
                 {ok, Req3, State2}
             catch
                 Error:Reason ->
-                    ?ERR("Path:~p, PH:~p, Error:~p,~nReason:~n~p,~nStackTrace:~n~p", [Path, PH, Error, Reason, erlang:get_stacktrace()]),
+                    ?ERR("Path:~p, PH:~p, Error:~p,Reason:~p,~nStackTrace:~n~p", [Path, PH, Error, Reason, erlang:get_stacktrace()]),
                     error_out(Req, State)
             end;
         {error, Path = <<"/favicon.ico">>} ->

@@ -4,7 +4,7 @@
 -export([
     menu_init/0
     ,menu_check/3
-    ,menu_headers/1
+    , menus/1
 ]).
 
 -include("web.hrl").
@@ -17,14 +17,7 @@
 
 %% 菜单数据初始化
 menu_init() ->
-    ets:insert(?ets_web_menu_data, [
-        begin
-            Menus		= do_menu_init(UserType),
-            MenuHeaders	= web_adm_menu:menu_headers(Menus),
-            {UserType, Menus, MenuHeaders}
-        end
-        || UserType <- maps:keys(?adm_user_types_desc)]),
-    ok.
+    ets:insert(?ets_web_menu_data, [{UserType, do_menu_init(UserType)} || UserType <- maps:keys(?adm_user_types_desc)]).
 
 %% 检查路由菜单权限
 menu_check(Path, Code, CodeSub) ->
@@ -46,23 +39,24 @@ menu_check(Path, Code, CodeSub) ->
             end
     end.
 
-%% 头部菜单数据
-menu_headers(Menus) ->
-    jsx:encode([Code || #{code := Code} <- Menus]).
+%% 根据账号类型得到原始菜单数据
+menus(UserType) ->
+    [{UserType, Menus}] = ets:lookup(?ets_web_menu_data, UserType),
+    MenuHeaderCodes	= menu_header_codes(Menus),
+    {Menus, MenuHeaderCodes}.
 
 
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
 
-%% 根据账号类型得到原始菜单数据
-menu(UserType) ->
-    [{UserType, Menus, MenuHeaders}] = ets:lookup(?ets_web_menu_data, UserType),
-    {Menus, MenuHeaders}.
+%% 头部菜单数据
+menu_header_codes(Menus) ->
+    jsx:encode([Code || #{code := Code} <- Menus]).
 
 %% 检查菜单权限
 menu_check2(UserType, Code, CodeSub) ->
-    {Menus, _MenuHeaders} = web_adm_menu:menu(UserType),
+    {Menus, _MenuHeaderCodes} = menus(UserType),
     menu_check3(Code, CodeSub, Menus).
 
 menu_check3(Code, CodeSub, [#{code := Code, sub := Sub} | _Menus]) ->

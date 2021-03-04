@@ -2,7 +2,12 @@
 -module(web).
 
 -export([
-	init/0
+    init/0
+
+    ,echo_success/0
+    ,echo_success/1
+    ,echo_failed/1
+    ,echo_json/1
 ]).
 
 -include("common.hrl").
@@ -14,12 +19,24 @@
 %%%===================================================================
 
 init() ->
-	ets:new(?ets_web_path2mfd,	[set, public, named_table, {read_concurrency,true}, {keypos, 1}]),
-	ets:new(?ets_web_menu_data,	[set, public, named_table, {read_concurrency,true}, {keypos, 1}]),
-	ets:new(?ets_web_menu_check,[set, public, named_table, {read_concurrency,true}, {keypos, 1}]),
+    ets:new(?ets_web_path2mfd,	[set, public, named_table, {read_concurrency,true}, {keypos, 1}]),
+    ets:new(?ets_web_menu_data,	[set, public, named_table, {read_concurrency,true}, {keypos, 1}]),
+    ets:new(?ets_web_menu_check,[set, public, named_table, {read_concurrency,true}, {keypos, 1}]),
 
-	web_adm_menu:menu_init(),
+    web_adm_menu:menu_init(),
 
-	PrivDir		= code:priv_dir(admin),
-	StaticDir	= PrivDir ++ "/static/",
-	erlweb:init(?web_port, [], StaticDir, ?web_session_app, web_erlweb_dispatch).
+    PrivDir		= code:priv_dir(admin),
+    StaticDir	= PrivDir ++ "/static/",
+    erlweb:init(?web_port, [], StaticDir, ?web_session_app, web_erlweb_dispatch).
+
+
+echo_success() ->
+    echo_success([]).
+echo_success(Data) ->
+    ?MODULE:echo_json(#{code => 1, data => Data}).
+
+echo_failed(Msg) ->
+    ?MODULE:echo_json(#{code => 0, msg => util:to_binary(Msg)}).
+
+echo_json(Data) ->
+    jsx:encode(Data).

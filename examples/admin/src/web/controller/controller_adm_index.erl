@@ -4,6 +4,7 @@
 -compile(nowarn_export_all).
 -compile(export_all).
 
+-include("common.hrl").
 -include("web.hrl").
 
 
@@ -11,8 +12,9 @@
 index(_Method, _Req, _OPts) ->
     case web_adm:check_login() of
         true ->
-            Type = web_cp:get_type(),
-            {Menus, PurviewKeys} = web_adm_menu:purview(Type),
+            %Type = web_cp:get_type(),
+            Type = ?adm_user_type_admin,
+            {_Menus, _PurviewKeys} = web_adm_menu:menus(Type),
             {ok, dtl, [
 %%                {project_name,	?PROJECT_NAME},
 %%                {static_url, 	?STATIC_URL},
@@ -21,8 +23,7 @@ index(_Method, _Req, _OPts) ->
 %%                {purview_keys,	PurviewKeys},
 %%                {menus,			Menus}
             ]};
-        false ->
-            {redirect, "/adm/login"}
+        false -> {redirect, "/adm/login"}
     end.
 
 
@@ -31,19 +32,10 @@ login(?web_get, Req, _Opts) ->
     case web_adm:check_login() of
         true -> {redirect, "/adm/index", Req};
         false ->
-            {ok, dtl, [
-%%                {project_name, ?PROJECT_NAME},
-%%                {powered_corp_url, ?POWERED_CORP_URL},
-%%                {powered_corp_name, ?POWERED_CORP_NAME},
-%%                {powered_studio_url, ?POWERED_STUDIO_URL},
-%%                {powered_studio_name, ?POWERED_STUDIO_NAME},
-%%                {ip_count, ?CP_IP_COUNT}
-            ]}
+            {ok, dtl, [{web_project_name, ?web_project_name}]}
     end;
 login(?web_post, Req, _Opts) ->
     case web_adm:login(Req) of
-        {ok, Req2} ->
-            {redirect, "/adm/index", Req2};
-        {error, ErrorMsg} ->
-            {error, ErrorMsg}
+        {ok} -> {json, web:echo_success()};
+        {error, ErrorMsg} -> {json, web:echo_failed(ErrorMsg)}
     end.

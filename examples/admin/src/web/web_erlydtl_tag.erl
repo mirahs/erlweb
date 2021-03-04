@@ -1,8 +1,7 @@
 -module(web_erlydtl_tag).
 
 -export([
-    web_project_name/1
-    ,web_static_url/1
+    web_static_url/1
 
     ,ymdhis/1
     ,ymd/1
@@ -14,10 +13,6 @@
 %%%===================================================================
 %%% API
 %%%===================================================================
-
-%% web 项目名称
-web_project_name(_Args) ->
-    ?web_project_name.
 
 %% web 资源地址
 web_static_url(_Args) ->
