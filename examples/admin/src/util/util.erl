@@ -2,7 +2,8 @@
 -module(util).
 
 -export([
-    md5/1
+    cn/2
+    ,md5/1
 
     ,to_atom/1
     ,to_list/1
@@ -21,6 +22,10 @@
 %%%===================================================================
 %%% API
 %%%===================================================================
+
+%% 在控制台显示带中文的字符串
+cn(Format, Args) ->
+    io:format("~ts", [iolist_to_binary(io_lib:format(Format, Args))]).
 
 md5(S) ->
     binary_to_list(list_to_binary([io_lib:format("~2.16.0b", [N]) || N <- binary_to_list(erlang:md5(S))])).

@@ -47,7 +47,7 @@ fun_up()
 {
 	cd ${DIR_ROOT}
 
-    erl -pa ${BEAM} -name admin_up@127.0.0.1 -noshell -eval "rpc:call('admin@127.0.0.1', sys_code, up, []), erlang:halt()."
+    erl -pa ${BEAM} -name admin_up@127.0.0.1 -noshell -eval "rpc:call('admin@127.0.0.1', dev, up, []), erlang:halt()."
 }
 
 fun_stop()
