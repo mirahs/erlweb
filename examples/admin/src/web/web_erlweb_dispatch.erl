@@ -13,7 +13,6 @@
 %%%===================================================================
 
 get(Path, AppB, ModuleB, FuncB) ->
-    %?INFO("xx:~p", [{Path, AppB, ModuleB, FuncB}]),
     #{module := Module, func := Func} = Handle =
         case ets:lookup(?ets_web_path2mfd, Path) of
             [{Path, PathHandle}] -> PathHandle;
@@ -26,7 +25,7 @@ get(Path, AppB, ModuleB, FuncB) ->
         ?web_app_adm ->
             case web_adm_menu:menu_check(Path, Module, Func) of
                 true -> {ok, Handle};
-                false -> {error, ?web_noaccess_url}
+                false -> {error, ?web_url_noaccess}
             end;
         _ -> {ok, Handle}
     end.

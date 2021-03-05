@@ -14,6 +14,7 @@
 
 -include("common.hrl").
 -include("web.hrl").
+-include("web_adm.hrl").
 
 -define(session_id,         session_id).
 -define(session_account,    session_account).

@@ -8,7 +8,8 @@
 ]).
 
 -include("web.hrl").
--include("web_menu.hrl").
+-include("web_adm.hrl").
+-include("web_adm_menu.hrl").
 
 
 %%%===================================================================

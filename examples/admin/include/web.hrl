@@ -1,6 +1,15 @@
 %%% -*- coding: latin-1 -*-
 
 %%%===================================================================
+%%% ets
+%%%===================================================================
+
+-define(ets_web_path2mfd,	ets_web_path2mfd).	% 路径转控制器和方法
+-define(ets_web_menu_data,	ets_web_menu_data).	% 账号对应菜单数据
+-define(ets_web_menu_check,	ets_web_menu_check).	% 路径和账号对应访问权限缓存
+
+
+%%%===================================================================
 %%% erlweb
 %%%===================================================================
 
@@ -17,9 +26,11 @@
 -define(web_session_app,    	    [?web_app_adm]).            % 需要 session 处理的 app 列表
 
 %% web 资源地址
--define(web_static_url,				"/static/").
-%% 无权限提示
--define(web_noaccess_url,		    "/adm/noaccess").
+-define(web_static_url,				"/static/"). % http://res.read.gank.com/
+
+-define(web_url_login,		        "/adm/login").
+-define(web_url_index,		        "/adm/index").
+-define(web_url_noaccess,		    "/adm/noaccess").
 
 
 -define(web_get,					<<"GET">>).
@@ -38,35 +49,3 @@
     dtl,
     dtle
 }).
-
-
-%%%===================================================================
-%%% ets
-%%%===================================================================
-
--define(ets_web_path2mfd,	ets_web_path2mfd).	% 路径转控制器和方法
--define(ets_web_menu_data,	ets_web_menu_data).	% 账号对应菜单数据
--define(ets_web_menu_check,	ets_web_menu_check).	% 路径和账号对应访问权限缓存
-
-
-%% 后台账号类型
--define(adm_user_type_admin,	10). % 管理员
--define(adm_user_type_guest,	20). % 游客
-
--define(adm_user_types_desc, #{
-    ?adm_user_type_admin    => "管理员",
-    ?adm_user_type_guest    => "游客"
-}).
-
-
-%% 不需要检查的 控制器 和 方法
--define(adm_non_check_cv,		[
-    {index, index}
-    ,{index, login}
-    ,{index, logout}
-    ,{index, noaccess}
-]).
-
-
--define(adm_ip_count,				5).
--define(adm_ips_count,				20).

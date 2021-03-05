@@ -22,13 +22,13 @@ index(_Method, _Req, _OPts) ->
                 ,{account, web_adm:get_account()}
                 ,{user_type_name, web_adm:get_type_name()}
             ]};
-        false -> {redirect, "/adm/login"}
+        false -> {redirect, ?web_url_login}
     end.
 
 %% 登陆
 login(?web_get, Req, _Opts) ->
     case web_adm:check_login() of
-        true -> {redirect, "/adm/index", Req};
+        true -> {redirect, ?web_url_index, Req};
         false -> {dtl, [{web_project_name, ?web_project_name}]}
     end;
 login(?web_post, Req, _Opts) ->
