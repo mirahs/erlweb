@@ -3,6 +3,7 @@
 
 -export([
     init/0
+    ,clear_cache/0
 
     ,echo_success/0
     ,echo_success/1
@@ -28,6 +29,13 @@ init() ->
     PrivDir		= code:priv_dir("."),
     StaticDir	= PrivDir ++ "/static/",
     erlweb:init(?web_port, [], StaticDir, ?web_session_app, web_erlweb_dispatch).
+
+clear_cache() ->
+    ets:delete_all_objects(?ets_web_path2mfd),
+    ets:delete_all_objects(?ets_web_menu_data),
+    ets:delete_all_objects(?ets_web_menu_check),
+
+    web_adm_menu:menu_init().
 
 
 echo_success() ->

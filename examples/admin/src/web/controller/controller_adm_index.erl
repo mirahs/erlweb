@@ -12,8 +12,7 @@
 index(_Method, _Req, _OPts) ->
     case web_adm:check_login() of
         true ->
-            %Type = web_cp:get_type(),
-            Type = ?adm_user_type_admin,
+            Type = web_adm:get_type(),
             Menus = web_adm_menu:menus(Type),
             {dtl, [
                 {web_project_name, ?web_project_name}
@@ -30,8 +29,7 @@ index(_Method, _Req, _OPts) ->
 login(?web_get, Req, _Opts) ->
     case web_adm:check_login() of
         true -> {redirect, "/adm/index", Req};
-        false ->
-            {dtl, [{web_project_name, ?web_project_name}]}
+        false -> {dtl, [{web_project_name, ?web_project_name}]}
     end;
 login(?web_post, Req, _Opts) ->
     case web_adm:login(Req) of
