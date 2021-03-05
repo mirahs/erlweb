@@ -42,17 +42,17 @@
             {% for menu in menus %}
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul id="menu_{{ menu.code }}" style="display: none" class="layui-nav layui-nav-tree" lay-filter="test">
-                {% for sub in menu.data %}
-                {% if sub.code %}
+                {% for menuSub in menu.data %}
+                {% if menuSub.code %}
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a href="javascript:" onclick="clickItem('{{ sub.name }}', '{{ sub.url }}', '{{ menu.name }}');">{{ sub.name }}</a>
+                    <a href="javascript:" onclick="clickItem('{{ menuSub.name }}', '{{ menuSub.url }}', '{{ menu.name }}');">{{ menuSub.name }}</a>
                 </li>
                 {% else %}
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:">{{ sub.name }}</a>
-                    {% for subSub in sub.data %}
+                    <a class="" href="javascript:">{{ menuSub.name }}</a>
+                    {% for menuSubSub in menuSub.data %}
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:" onclick="clickItem('{{ subSub.name }}', '{{ subSub.url }}', '{{ menu.name }}');">{{ subSub.name }}</a></dd>
+                        <dd><a href="javascript:" onclick="clickItem('{{ menuSubSub.name }}', '{{ menuSubSub.url }}', '{{ menu.name }}');">{{ menuSubSub.name }}</a></dd>
                     </dl>
                     {% endfor %}
                 </li>
