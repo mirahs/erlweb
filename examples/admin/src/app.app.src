@@ -8,6 +8,7 @@
 
 			,sasl
 			,erlweb
+			,mysql
 		]},
 		{mod,			{app_app, []}}
 	]

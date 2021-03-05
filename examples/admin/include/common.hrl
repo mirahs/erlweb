@@ -28,8 +28,7 @@
 
 
 %% MySQL 数据库 ID
--define(db_core,	db_core).
--define(db_log,		db_log).
+-define(db_admin,	db_admin).
 
 
 %%%===================================================================
@@ -52,8 +51,7 @@
 %%%===================================================================
 
 %% 转二进制 简写
--define(B(D),   (util:to_binary(D))/binary  ).
--define(BS(D),  (util:term_to_bitstring(D))/binary  ).
+-define(B(D),   (util:to_binary(D))/binary).
 
 %% 函数封装
 -define(IF(B,T,F),  case (B) of true -> (T); false -> (F) end).
