@@ -2,8 +2,7 @@
 -module(util).
 
 -export([
-    cn/2
-    ,md5/1
+    md5/1
 
     ,to_atom/1
     ,to_list/1
@@ -12,8 +11,6 @@
     ,to_integer/1
     ,to_tuple/1
     ,list_to_atom/1
-
-    ,cowboy_ip/1
 ]).
 
 -include("common.hrl").
@@ -22,10 +19,6 @@
 %%%===================================================================
 %%% API
 %%%===================================================================
-
-%% 在控制台显示带中文的字符串
-cn(Format, Args) ->
-    io:format("~ts", [iolist_to_binary(io_lib:format(Format, Args))]).
 
 md5(S) ->
     binary_to_list(list_to_binary([io_lib:format("~2.16.0b", [N]) || N <- binary_to_list(erlang:md5(S))])).
@@ -103,20 +96,4 @@ list_to_atom(List)->
         erlang:list_to_existing_atom(List)
     catch _:_ ->
         erlang:list_to_atom(List)
-    end.
-
-
-%%%===================================================================
-%%% cowboy
-%%%===================================================================
-
-cowboy_ip(Req) ->
-%%    ?DEBUG("cowboy_req:peer:~p", [cowboy_req:peer(Req)]),
-%%    ?DEBUG("cowboy_req:header x-real-ip:~p", [cowboy_req:header(<<"x-real-ip">>, Req)]),
-%%    ?DEBUG("cowboy_req:headers:~p", [cowboy_req:headers(Req)]),
-    case cowboy_req:header(<<"x-real-ip">>, Req) of
-        undefined ->
-            {{Ip0, Ip1, Ip2, Ip3}, _Port} = cowboy_req:peer(Req),
-            lists:concat([Ip0, ".", Ip1, ".", Ip2, ".", Ip3]);
-        Ip -> to_list(Ip)
     end.

@@ -38,7 +38,7 @@ up(ModList, force) when is_list(ModList) ->
 
 %% 热更新
 do_up(L, F) ->
-    util:cn("--- begin hot swapping node: ~p~n", [node()]),
+    io:format("--- begin hot swapping node: ~p~n", [node()]),
     Args =
         case {L, F} of
             {[], false}         -> [];
@@ -54,7 +54,7 @@ do_up(L, F) ->
 print_up([]) -> ok;
 print_up([{M, R} | T]) ->
     case R of
-        ok -> util:cn("# load module success: ~p~n", [M]);
-        {error, Reason} -> util:cn("* load module failed [~p]: ~p~n", [M, Reason])
+        ok -> io:format("# load module success: ~p~n", [M]);
+        {error, Reason} -> io:format("* load module failed [~p]: ~p~n", [M, Reason])
     end,
     print_up(T).

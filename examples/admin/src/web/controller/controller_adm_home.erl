@@ -14,8 +14,9 @@ welcome(_Method, _Req, _OPts) ->
 
 %% 清除网站缓存
 clear(_Method, Req, _OPts) ->
-    case cowboy_req:match_qs([{act, [], undefined}], Req) of
-        #{act := <<"clear">>} ->
+    Data = cowboy_req:parse_qs(Req),
+    case proplists:get_value(<<"act">>, Data) of
+        <<"clear">> ->
             web:clear_cache(),
             {error, "成功清除缓存！"};
         _ -> {dtl}

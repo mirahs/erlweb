@@ -38,7 +38,7 @@ check_login() ->
 %% 登录
 login(Req) ->
     {ok, PostVals, _Req2} = cowboy_req:read_urlencoded_body(Req),
-    _IP     = util:cowboy_ip(Req),
+    _IP     = util_cowboy:ip(Req),
     Account = proplists:get_value(<<"account">>, PostVals),
     Password= proplists:get_value(<<"password">>, PostVals),
     case Account =:= <<"admin">> andalso Password =:= util:to_binary(util:md5("admin")) of
