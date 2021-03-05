@@ -9,4 +9,4 @@
 
 
 welcome(_Method, _Req, _OPts) ->
-    {output, "welcome"}.
+    {text, "welcome"}.

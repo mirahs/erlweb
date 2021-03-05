@@ -15,7 +15,7 @@ index(_Method, _Req, _OPts) ->
             %Type = web_cp:get_type(),
             Type = ?adm_user_type_admin,
             Menus = web_adm_menu:menus(Type),
-            {ok, dtl, [
+            {dtl, [
                 {web_project_name, ?web_project_name}
 
                 ,{menus, Menus}
@@ -31,7 +31,7 @@ login(?web_get, Req, _Opts) ->
     case web_adm:check_login() of
         true -> {redirect, "/adm/index", Req};
         false ->
-            {ok, dtl, [{web_project_name, ?web_project_name}]}
+            {dtl, [{web_project_name, ?web_project_name}]}
     end;
 login(?web_post, Req, _Opts) ->
     case web_adm:login(Req) of
@@ -41,4 +41,4 @@ login(?web_post, Req, _Opts) ->
 
 %% 无权限访问
 noaccess(_Method, _Req, _Opts) ->
-    {ok, dtl, [{account, web_adm:get_account()}]}.
+    {dtl, [{account, web_adm:get_account()}]}.

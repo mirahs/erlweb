@@ -37,24 +37,24 @@ terminate(_Reason, _Req, _State) ->
 
 handle_do(Method, Req, State, #{controller := Module, func := Func, dtl := Dtl, dtle := DtlEdit}) ->
     try Module:Func(Method, Req, State) of
-        {output, Content} ->
+        {text, Content} ->
             Req2 = cowboy_req:reply(200, #{<<"content-type">> => <<"text/plain; charset=utf-8">>}, Content, Req),
             {ok, Req2, State};
-        {output, Content, Req1, Opts1} ->
+        {text, Content, Req1, Opts1} ->
             Req2 = cowboy_req:reply(200, #{<<"content-type">> => <<"text/plain;charset=utf-8">>}, Content, Req1),
             {ok, Req2, Opts1};
-        {ok, dtl} ->
-            handle_do_dtl(Req, State, Dtl, []);
-        {ok, dtl_edit} ->
-            handle_do_dtl(Req, State, DtlEdit, []);
-        {ok, dtl, DtlKeyValues} ->
-            handle_do_dtl(Req, State, Dtl, DtlKeyValues);
-        {ok, dtl_edit, DtlKeyValues} ->
-            handle_do_dtl(Req, State, DtlEdit, DtlKeyValues);
         {json, JsonData} ->
             Req1 = cowboy_req:reply(200, #{<<"content-type">> => <<"text/json;charset=utf-8">>}, JsonData, Req),
             {ok, Req1, State};
-        redirect ->
+        {dtl} ->
+            handle_do_dtl(Req, State, Dtl, []);
+        {dtl, DtlKeyValues} ->
+            handle_do_dtl(Req, State, Dtl, DtlKeyValues);
+        {dtl_edit} ->
+            handle_do_dtl(Req, State, DtlEdit, []);
+        {dtl_edit, DtlKeyValues} ->
+            handle_do_dtl(Req, State, DtlEdit, DtlKeyValues);
+        {redirect} ->
             handle_do_redirect(Req, State);
         {redirect, Url} ->
             handle_do_redirect(Req, State, Url);
@@ -69,7 +69,7 @@ handle_do(Method, Req, State, #{controller := Module, func := Func, dtl := Dtl, 
     catch
         error:{error, Msg} -> handle_do_error(Req, State, Msg);
         error:{error, Msg, Url} -> handle_do_error(Req, State, Msg, Url);
-        error:redirect -> handle_do_redirect(Req, State);
+        error:{redirect} -> handle_do_redirect(Req, State);
         error:{redirect, Url} -> handle_do_redirect(Req, State, Url)
     end.
 

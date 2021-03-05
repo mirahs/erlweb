@@ -7,13 +7,14 @@
 -define(web_port,           	    1111).                      % web 端口
 
 -define(web_project_name,			"干货悦读").		        % 项目名称
--define(web_powered_corp_name,		"干货科技").			    % 公司名称
--define(web_powered_corp_url,		"http://www.gank.top").		% 公司官网
--define(web_powered_studio_name,	"干货悦读").			    % 工作室名称
--define(web_powered_studio_url,		"http://www.read.gank.top").% 工作室官网
+-define(web_corp_name,		        "干货科技").			    % 公司名称
+-define(web_corp_url,		        "http://www.gank.top").		% 公司官网
+-define(web_studio_name,	        "干货悦读").			    % 工作室名称
+-define(web_studio_url,		        "http://www.read.gank.top").% 工作室官网
+
 
 -define(web_app_adm,			    <<"adm">>).		            % app-adm
--define(web_session_app,    	    [?web_app_adm]).            % web 需要 session 处理的 app 列表
+-define(web_session_app,    	    [?web_app_adm]).            % 需要 session 处理的 app 列表
 
 %% web 资源地址
 -define(web_static_url,				"/static/").
@@ -26,9 +27,8 @@
 
 -define(web_error(Msg),				erlang:error({error, Msg})).
 -define(web_error(Msg, Url),		erlang:error({error, Msg, Url})).
--define(web_redirect(),				erlang:error(redirect)).
+-define(web_redirect(),				erlang:error({redirect})).
 -define(web_redirect(Url),			erlang:error({redirect, Url})).
--define(web_must_login(),			web_cp:must_login()).
 
 -record(web_path2mfd, {
     path,
