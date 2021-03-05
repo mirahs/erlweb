@@ -25,7 +25,7 @@ init() ->
 
     web_adm_menu:menu_init(),
 
-    PrivDir		= code:priv_dir(admin),
+    PrivDir		= code:priv_dir("."),
     StaticDir	= PrivDir ++ "/static/",
     erlweb:init(?web_port, [], StaticDir, ?web_session_app, web_erlweb_dispatch).
 
