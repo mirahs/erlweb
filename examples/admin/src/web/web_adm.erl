@@ -42,18 +42,22 @@ login(Req) ->
     _IP     = util_cowboy:ip(Req),
     Account = proplists:get_value(<<"account">>, PostVals),
     Password= proplists:get_value(<<"password">>, PostVals),
-    case Account =:= <<"admin">> andalso Password =:= util:to_binary(util:md5("admin")) of
-        true ->
-            Hash = login_key_rule(Account, Password),
-            erlweb_session:set([
-                {?session_id,			99999999}
-                ,{?session_account,		Account}
-                ,{?session_password,	Password}
-                ,{?session_type,		?adm_user_type_admin}
-                ,{?session_hash,		Hash}
-            ]),
-            {ok};
-        false ->  {error, "账号或密码错误"}
+    case tbl_adm_user:get_by_account(Account) of
+        {ok, #{id := IdDb, password := PasswordDb, type := TypeDb}} ->
+            case util:to_binary(util:md5(Password)) of
+                PasswordDb ->
+                    Hash = login_key_rule(Account, Password),
+                    erlweb_session:set([
+                        {?session_id,			IdDb}
+                        ,{?session_account,		Account}
+                        ,{?session_password,	Password}
+                        ,{?session_type,		TypeDb}
+                        ,{?session_hash,		Hash}
+                    ]),
+                    {ok};
+                _ -> {error, "密码错误"}
+            end;
+        _ ->  {error, "账号不存在"}
     end.
 
 
