@@ -41,7 +41,7 @@
         <div class="layui-side-scroll">
             {% for menu in menus %}
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul id="menu_{{ menu.code }}" style="display: none" class="layui-nav layui-nav-tree" lay-filter="test">
+            <ul id="sidebar_{{ menu.code }}" style="display: none" class="layui-nav layui-nav-tree" lay-filter="test">
                 {% for menuSub in menu.data %}
                 {% if menuSub.code %}
                 <li class="layui-nav-item layui-nav-itemed">
@@ -107,10 +107,10 @@
             $(this).css('display', 'none');
         });
         // 显示被点击顶部的左侧菜单
-        $('#menu_' + headerKey).css('display', '');
+        $('#sidebar_' + headerKey).css('display', '');
 
         // 显示左侧菜单第一个链接
-        const firstSideBar = $('#menu_' + headerKey + '>li:first');
+        const firstSideBar = $('#sidebar_' + headerKey + '>li:first');
 
         let item = null;
         if (firstSideBar.is(':has(dl)')) {

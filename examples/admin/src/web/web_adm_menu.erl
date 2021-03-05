@@ -72,18 +72,18 @@ menu_check3(_Code, _CodeSub, []) ->
 %% 菜单数据初始化(根据账号类型)
 do_menu_init(UserType) ->
     Fun = fun
-              (#{data := Data} = Menu, MenusAcc) ->
+              (#{code := Code, data := Data} = Menu, MenusAcc) ->
                   Fun2 = fun
                              (#{key := Keys} = MenuSub, MenuSubsAcc) ->
                                  case Keys =:= [] orelse lists:member(UserType, Keys)  of
-                                     true -> MenuSubsAcc ++ [MenuSub];
+                                     true -> MenuSubsAcc ++ [do_menu_init_item(Code, MenuSub)];
                                      false -> MenuSubsAcc
                                  end;
                              (#{data := DataSub} = MenuSub, MenuSubsAcc) ->
                                  Fun3 = fun
                                             (#{key := KeysSub} = MenuSubSub, MenuSubSubsAcc) ->
                                                 case KeysSub =:= [] orelse lists:member(UserType, KeysSub) of
-                                                    true -> MenuSubSubsAcc ++ [MenuSubSub];
+                                                    true -> MenuSubSubsAcc ++ [do_menu_init_item(Code, MenuSubSub)];
                                                     false -> MenuSubSubsAcc
                                                 end
                                         end,
@@ -104,3 +104,8 @@ do_menu_init(UserType) ->
                   end
           end,
     lists:foldl(Fun, [], ?web_menus).
+
+do_menu_init_item(_Code, Item = #{url := Url}) ->
+    Item#{url => lists:concat(["/", util:to_list(?web_app_adm), "/", Url])};
+do_menu_init_item(Code, Item = #{code := CodeSub}) ->
+    Item#{url => lists:concat(["/", util:to_list(?web_app_adm), "/", Code, "/", CodeSub])}.
