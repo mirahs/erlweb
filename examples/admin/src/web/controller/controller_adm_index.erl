@@ -14,12 +14,11 @@ index(_Method, _Req, _OPts) ->
         true ->
             %Type = web_cp:get_type(),
             Type = ?adm_user_type_admin,
-            {Menus, MenuHeaders} = web_adm_menu:menus(Type),
+            Menus = web_adm_menu:menus(Type),
             {ok, dtl, [
                 {web_project_name, ?web_project_name}
 
                 ,{menus, Menus}
-                ,{menu_headers, MenuHeaders}
 
                 ,{account, web_adm:get_account()}
                 ,{user_type_name, web_adm:get_type_name()}

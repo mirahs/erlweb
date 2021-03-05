@@ -42,32 +42,27 @@ menu_check(Path, Code, CodeSub) ->
 %% 根据账号类型得到原始菜单数据
 menus(UserType) ->
     [{UserType, Menus}] = ets:lookup(?ets_web_menu_data, UserType),
-    MenuHeaders	= menu_headers(Menus),
-    {Menus, MenuHeaders}.
+    Menus.
 
 
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
 
-%% 头部菜单数据
-menu_headers(Menus) ->
-    jsx:encode([Code || #{code := Code} <- Menus]).
-
 %% 检查菜单权限
 menu_check2(UserType, Code, CodeSub) ->
-    {Menus, _MenuHeaderCodes} = menus(UserType),
+    Menus = menus(UserType),
     menu_check3(Code, CodeSub, Menus).
 
-menu_check3(Code, CodeSub, [#{code := Code, sub := Sub} | _Menus]) ->
+menu_check3(Code, CodeSub, [#{code := Code, data := Data} | _Menus]) ->
     Fun = fun
-              (#{data := Data}) ->
-                  Fun2 = fun(#{code_sub := CodeSubXX}) -> CodeSub =:= CodeSubXX end,
-                  lists:any(Fun2, Data);
-              (#{code_sub := CodeSubXX}) ->
+              (#{data := DataSub}) ->
+                  Fun2 = fun(#{code := CodeSubXX}) -> CodeSub =:= CodeSubXX end,
+                  lists:any(Fun2, DataSub);
+              (#{code := CodeSubXX}) ->
                   CodeSub =:= CodeSubXX
           end,
-    lists:any(Fun, Sub);
+    lists:any(Fun, Data);
 menu_check3(Code, CodeSub, [_Menu | Menus]) ->
     menu_check3(Code, CodeSub, Menus);
 menu_check3(_Code, _CodeSub, []) ->
@@ -77,14 +72,14 @@ menu_check3(_Code, _CodeSub, []) ->
 %% 菜单数据初始化(根据账号类型)
 do_menu_init(UserType) ->
     Fun = fun
-              (#{sub := Sub} = Menu, MenusAcc) ->
+              (#{data := Data} = Menu, MenusAcc) ->
                   Fun2 = fun
                              (#{key := Keys} = MenuSub, MenuSubsAcc) ->
                                  case Keys =:= [] orelse lists:member(UserType, Keys)  of
                                      true -> MenuSubsAcc ++ [MenuSub];
                                      false -> MenuSubsAcc
                                  end;
-                             (#{data := Data} = MenuSub, MenuSubsAcc) ->
+                             (#{data := DataSub} = MenuSub, MenuSubsAcc) ->
                                  Fun3 = fun
                                             (#{key := KeysSub} = MenuSubSub, MenuSubSubsAcc) ->
                                                 case KeysSub =:= [] orelse lists:member(UserType, KeysSub) of
@@ -93,18 +88,18 @@ do_menu_init(UserType) ->
                                                 end
                                         end,
 
-                                 case lists:foldl(Fun3, [], Data) of
+                                 case lists:foldl(Fun3, [], DataSub) of
                                      [] -> MenuSubsAcc;
-                                     Data2 ->
-                                         MenuSub2 = MenuSub#{data => Data2},
+                                     DataSub2 ->
+                                         MenuSub2 = MenuSub#{data => DataSub2},
                                          MenuSubsAcc ++ [MenuSub2]
                                  end
                          end,
 
-                  case lists:foldl(Fun2, [], Sub) of
+                  case lists:foldl(Fun2, [], Data) of
                       [] -> MenusAcc;
-                      Sub2 ->
-                          Menu2 = Menu#{sub => Sub2},
+                      Data2 ->
+                          Menu2 = Menu#{data => Data2},
                           MenusAcc ++ [Menu2]
                   end
           end,

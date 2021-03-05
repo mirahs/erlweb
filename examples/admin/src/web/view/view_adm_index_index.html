@@ -42,8 +42,8 @@
             {% for menu in menus %}
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul id="menu_{{ menu.code }}" style="display: none" class="layui-nav layui-nav-tree" lay-filter="test">
-                {% for sub in menu.sub %}
-                {% if sub.code_sub %}
+                {% for sub in menu.data %}
+                {% if sub.code %}
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:" onclick="clickItem('{{ sub.name }}', '{{ sub.url }}', '{{ menu.name }}');">{{ sub.name }}</a>
                 </li>
