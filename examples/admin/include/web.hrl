@@ -21,6 +21,25 @@
 -define(web_noaccess_url,		    "/adm/noaccess").
 
 
+-define(web_get,					<<"GET">>).
+-define(web_post,					<<"POST">>).
+
+-define(web_error(Msg),				erlang:error({error, Msg})).
+-define(web_error(Msg, Url),		erlang:error({error, Msg, Url})).
+-define(web_redirect(),				erlang:error(redirect)).
+-define(web_redirect(Url),			erlang:error({redirect, Url})).
+-define(web_must_login(),			web_cp:must_login()).
+
+-record(web_path2mfd, {
+    path,
+    controller,
+    module,
+    func,
+    dtl,
+    dtle
+}).
+
+
 %%%===================================================================
 %%% ets
 %%%===================================================================
@@ -51,22 +70,3 @@
 
 -define(adm_ip_count,				5).
 -define(adm_ips_count,				20).
-
--define(web_get,					<<"GET">>).
--define(web_post,					<<"POST">>).
-
--define(web_error(Msg),				erlang:error({error, Msg})).
--define(web_error(Msg, Url),		erlang:error({error, Msg, Url})).
--define(web_redirect(),				erlang:error(redirect)).
--define(web_redirect(Url),			erlang:error({redirect, Url})).
--define(web_must_login(),			web_cp:must_login()).
-
-
--record(web_path2mfd, {
-    path,
-    controller,
-    module,
-    func,
-    dtl,
-    dtle
-}).

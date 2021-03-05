@@ -21,11 +21,10 @@ menu_init() ->
 
 %% 检查路由菜单权限
 menu_check(Path, Code, CodeSub) ->
-    %?INFO("~p", [{Path, Code, CodeSub}]),
     case lists:member({Code, CodeSub}, ?adm_non_check_cv) of
         true -> true;
         false ->
-            Type = erlweb_session:get(session_type, 0),
+            Type = web_adm:get_type(),
             case Type of
                 0 -> false;
                 _ ->

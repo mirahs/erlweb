@@ -109,15 +109,10 @@
         // 显示被点击顶部的左侧菜单
         $('#sidebar_' + headerKey).css('display', '');
 
-        // 显示左侧菜单第一个链接
+        // 点击左侧菜单第一个链接
         const firstSideBar = $('#sidebar_' + headerKey + '>li:first');
 
-        let item = null;
-        if (firstSideBar.is(':has(dl)')) {
-            item = firstSideBar.find('dl>dd>a:first');
-        } else {
-            item = firstSideBar.children('li>a:first');
-        }
+        const item = firstSideBar.is(':has(dl)') ? firstSideBar.find('dl>dd>a:first') : firstSideBar.children('li>a:first');
         item.addClass('layui-this');
         item.click();
     }
