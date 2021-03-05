@@ -21,7 +21,7 @@
     <div class="layui-header">
         <div class="layui-logo">{{ web_project_name }}</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
-        <ul id="topmenu" class="layui-nav layui-layout-left">
+        <ul id="menu_header" class="layui-nav layui-layout-left">
             {% for menu in menus %}
             <li class="layui-nav-item">
                 <a href="javascript:" id="header_{{ menu.code }}" onclick="toggleHeader('{{ menu.code }}');">{{ menu.name }}</a>
@@ -45,14 +45,14 @@
                 {% for sub in menu.sub %}
                 {% if sub.code_sub %}
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a href="javascript:" onclick="toggleItem('{{ sub.name }}', '{{ sub.url }}', '{{ menu.name }}');">{{ sub.name }}</a>
+                    <a href="javascript:" onclick="clickItem('{{ sub.name }}', '{{ sub.url }}', '{{ menu.name }}');">{{ sub.name }}</a>
                 </li>
                 {% else %}
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:">{{ sub.name }}</a>
                     {% for subSub in sub.data %}
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:" onclick="toggleItem('{{ subSub.name }}', '{{ subSub.url }}', '{{ menu.name }}');">{{ subSub.name }}</a></dd>
+                        <dd><a href="javascript:" onclick="clickItem('{{ subSub.name }}', '{{ subSub.url }}', '{{ menu.name }}');">{{ subSub.name }}</a></dd>
                     </dl>
                     {% endfor %}
                 </li>
@@ -103,16 +103,16 @@
     }
 
     // 显示左侧菜单
-    function showSideBar(key) {
+    function showSideBar(headerKey) {
         // 隐藏所有左侧菜单
         $('.layui-nav-tree').each(function() {
             $(this).css('display', 'none');
         });
         // 显示被点击顶部的左侧菜单
-        $('#menu_' + key).css('display', '');
+        $('#menu_' + headerKey).css('display', '');
 
         // 显示左侧菜单第一个链接
-        const firstSideBarItem = $('#menu_' + key + '>li:first');
+        const firstSideBarItem = $('#menu_' + headerKey + '>li:first');
 
         let item = null;
         if (firstSideBarItem.is(':has(dl)')) {
@@ -124,18 +124,18 @@
         item.click();
     }
 
-    function toggleItem(name, url, headerName) {
+    function clickItem(name, url, headerName) {
         showTitle(headerName, name);
         $('#main').attr('src', url);
     }
 
     function init() {
-        // 显示顶部第一个菜单
-        const firstHeader = $('#topmenu>li>a:first');
+        // 顶部第一个菜单
+        const firstHeader = $('#menu_header>li>a:first');
         firstHeader.parent().addClass('layui-this');
 
         // 显示顶部菜单的左侧菜单
-        const firstHeaderKey = firstHeader[0].id.substr('header_'.length);
+        const firstHeaderKey = firstHeader.attr('id').substr('header_'.length);
         showSideBar(firstHeaderKey);
     }
 
