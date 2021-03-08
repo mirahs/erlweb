@@ -8,14 +8,16 @@
 -include("web.hrl").
 
 
-%% 登陆
-login(?web_get, Req, _Opts) ->
-    case web_adm:check_login() of
-        true -> {redirect, "/adm/index", Req};
-        false -> {dtl, [{web_project_name, ?web_project_name}]}
-    end;
-login(?web_post, Req, _Opts) ->
-    case web_adm:login(Req) of
-        {ok} -> {json, web:echo_success()};
-        {error, ErrorMsg} -> {json, web:echo_failed(ErrorMsg)}
-    end.
+%% 密码更新
+password(?web_get, Req, _Opts) ->
+    Data    = cowboy_req:parse_qs(Req),
+    Account0= proplists:get_value(<<"account">>, Data),
+    Account = ?IF(Account0 =:= undefined, web_adm:get_account(), Account0),
+    {dtl, [{account, Account}]};
+password(?web_post, Req, _Opts) ->
+    {ok, Data, _Req2} = cowboy_req:read_urlencoded_body(Req),
+    Account = proplists:get_value(<<"account">>, Data, <<>>),
+    Password= proplists:get_value(<<"password">>, Data, <<>>),
+    ?IF(Account =:= <<>> orelse Password =:= <<>>, ?web_failed("请输入正确的数据"), skip),
+    tbl_adm_user:update_password_by_account(Account, util:md5(util:md5(Password))),
+    web:echo_success().

@@ -33,9 +33,14 @@ login(?web_get, Req, _Opts) ->
     end;
 login(?web_post, Req, _Opts) ->
     case web_adm:login(Req) of
-        {ok} -> {json, web:echo_success()};
-        {error, ErrorMsg} -> {json, web:echo_failed(ErrorMsg)}
+        {ok} -> web:echo_success();
+        {error, ErrorMsg} -> web:echo_failed(ErrorMsg)
     end.
+
+%% 退出
+logout(_Method, Req, _Opts) ->
+    Req2 = erlweb_session:destory(Req),
+    {redirect, ?web_url_login, Req2}.
 
 %% 无权限访问
 noaccess(_Method, _Req, _Opts) ->

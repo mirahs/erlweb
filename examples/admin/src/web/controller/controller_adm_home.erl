@@ -18,6 +18,6 @@ clear(_Method, Req, _OPts) ->
     case proplists:get_value(<<"act">>, Data) of
         <<"clear">> ->
             web:clear_cache(),
-            {error, "成功清除缓存！"};
+            {error, "成功清除缓存"};
         _ -> {dtl}
     end.

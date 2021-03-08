@@ -38,10 +38,10 @@ check_login() ->
 
 %% 登录
 login(Req) ->
-    {ok, PostVals, _Req2} = cowboy_req:read_urlencoded_body(Req),
+    {ok, Data, _Req2} = cowboy_req:read_urlencoded_body(Req),
     _IP     = util_cowboy:ip(Req),
-    Account = proplists:get_value(<<"account">>, PostVals),
-    Password= proplists:get_value(<<"password">>, PostVals),
+    Account = proplists:get_value(<<"account">>, Data),
+    Password= proplists:get_value(<<"password">>, Data),
     case tbl_adm_user:get_by_account(Account) of
         {ok, #{id := IdDb, password := PasswordDb, type := TypeDb}} ->
             case util:to_binary(util:md5(Password)) of

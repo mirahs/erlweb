@@ -28,9 +28,9 @@
 %% web 资源地址
 -define(web_static_url,				"/static/"). % http://res.read.gank.com/
 
--define(web_url_login,		        "/adm/login").
--define(web_url_index,		        "/adm/index").
--define(web_url_noaccess,		    "/adm/noaccess").
+-define(web_url_login,		        "/adm/index/login").
+-define(web_url_index,		        "/adm/index/index").
+-define(web_url_noaccess,		    "/adm/index/noaccess").
 
 
 -define(web_get,					<<"GET">>).
@@ -38,6 +38,7 @@
 
 -define(web_error(Msg),				erlang:error({error, Msg})).
 -define(web_error(Msg, Url),		erlang:error({error, Msg, Url})).
+-define(web_failed(Msg),		    erlang:error(web:echo_failed(Msg))).
 -define(web_redirect(),				erlang:error({redirect})).
 -define(web_redirect(Url),			erlang:error({redirect, Url})).
 

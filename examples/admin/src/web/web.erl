@@ -47,4 +47,4 @@ echo_failed(Msg) ->
     ?MODULE:echo_json(#{code => 0, msg => util:to_binary(Msg)}).
 
 echo_json(Data) ->
-    jsx:encode(Data).
+    {json, jsx:encode(Data)}.

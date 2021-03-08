@@ -67,6 +67,9 @@ handle_do(Method, Req, State, #{controller := Module, func := Func, dtl := Dtl, 
         {error, Msg, Url} ->
             handle_do_error(Req, State, Msg, Url)
     catch
+        error:{json, JsonData} ->
+            Req1 = cowboy_req:reply(200, #{<<"content-type">> => <<"text/json;charset=utf-8">>}, JsonData, Req),
+            {ok, Req1, State};
         error:{error, Msg} -> handle_do_error(Req, State, Msg);
         error:{error, Msg, Url} -> handle_do_error(Req, State, Msg, Url);
         error:{redirect} -> handle_do_redirect(Req, State);
