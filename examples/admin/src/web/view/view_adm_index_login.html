@@ -35,47 +35,32 @@
 </div>
 
 
+<script src="{% web_static_url %}js/app.js"></script>
 <script src="{% web_static_url %}layui/layui.js"></script>
 <script src="{% web_static_url %}js/md5.js"></script>
 <script type="text/javascript">
-    layui.use(['layer', 'form', 'jquery'], function() {
+    layui.use(['layer', 'form', 'jquery'], function () {
         const form = layui.form;
         const $ = layui.jquery;
 
 
-        form.on('submit(btnLogin)', function(formObj) {
-            const data = formObj.field;
+        form.on('submit(btnLogin)', function (obj) {
+            const data = obj.field;
             data['password'] = hex_md5(data['password']);
 
-            $.ajax({
-                url: 'login', //登录url
-                data: data,
-                dataType: 'text',
-                type: 'post',
-
-                beforeSend: function() {
-                    layer.load(2, {
-                        shade: [0.5, "#333"]
-                    });
-                },
-                success: function(res) {
-                    console.log('res:', res);
-                    res = JSON.parse(res);
-                    if (res.code === 1) {
-                        // 跳转到主页
-                        location.href = "index";
-                    }else{
-                        layer.msg(res.msg);
-                    }
-                },
-                error: function(xhr) {
+            request($, '', data, function (res, xhr) {
+                if (xhr) {
                     console.log("返回响应信息:", xhr.responseText);
                     layer.msg("网络错误");
-                },
-                complete: function() {
-                    layer.closeAll("loading");
-                },
-            });
+                    return;
+                }
+                res = JSON.parse(res);
+                if (res.code === 1) {
+                    location.href = "index"; //跳转到主页
+                }else{
+                    layer.msg(res.msg);
+                }
+            }, 'post');
 
             return false;
         });
