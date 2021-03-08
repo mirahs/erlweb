@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `adm_user` (
   `note` text NOT NULL COMMENT '备注',
 
   `login_times` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
-  `login_last` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登录时间',
+  `login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `login_ip` char(15) NOT NULL DEFAULT '' COMMENT '最后登录IP',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account` (`account`)
