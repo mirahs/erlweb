@@ -7,12 +7,12 @@
 ]).
 
 -export([
-    get/1,
-    get/2,
-    set/1,
-    set/2,
-    del/1,
-    destory/1
+    get/1
+    ,get/2
+    ,set/2
+    ,set/1
+    ,del/1
+    ,destory/1
 ]).
 
 -include("erlweb.hrl").
@@ -23,6 +23,10 @@
 -define(cookie_session_id_atom,	cserlwebid).
 
 
+%%%===================================================================
+%%% middleware
+%%%===================================================================
+
 execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
     AppBTmp = cowboy_req:binding(app, Req),
     AppB    = ?IF(AppBTmp =:= undefined, <<"index">>, AppBTmp),
@@ -30,13 +34,13 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
         true ->
             erlang:erase(?dict_session_id),
             case cowboy_req:match_cookies([{?cookie_session_id_atom, [], <<>>}], Req) of
-                #{?cookie_session_id_atom := SessionId} when SessionId =/= <<"">> ->
+                #{?cookie_session_id_atom := SessionId} when SessionId =/= <<>> ->
                     SessionData	= erlweb_session_srv:session_get(SessionId),
                     %?INFO("SessionId:~p", [SessionId]),
                     %?INFO("SessionData:~p", [SessionData]),
-                    [erlang:put(Key, Value) || {Key, Value} <- SessionData],
+                    SessionKeys = [begin erlang:put(Key, Value), Key end || {Key, Value} <- SessionData],
                     erlang:put(?dict_session_id, SessionId),
-                    erlang:put(?dict_session_keys, [Key || {Key, _Data} <- SessionData]),
+                    erlang:put(?dict_session_keys, SessionKeys),
                     {ok, Req, Env};
                 _ ->
                     SessionId = session_id(Req),
@@ -60,61 +64,56 @@ on_response(Req) ->
     Req.
 
 
-%% API
+%%%===================================================================
+%%% API
+%%%===================================================================
+
 get(Key) ->
     ?MODULE:get(Key, undefined).
 
 get(Key, DefaultValue) ->
     case erlang:get(Key) of
-        undefined ->
-            DefaultValue;
-        Value ->
-            Value
+        undefined -> DefaultValue;
+        Value -> Value
     end.
 
 set(Key, Value) ->
     erlang:put(Key, Value),
     Keys = erlang:get(?dict_session_keys),
-    erlang:put(?dict_session_keys, [Key|lists:delete(Key, Keys)]).
+    erlang:put(?dict_session_keys, [Key | lists:delete(Key, Keys)]).
 
 set(KeyValues) ->
     [set(Key, Value) || {Key, Value} <- KeyValues].
 
-del() ->
-    Keys= erlang:get(?dict_session_keys),
-    [del(Key) || Key <- Keys].
-
 del(Key) ->
     erlang:erase(Key),
-    Keys= erlang:get(?dict_session_keys),
+    Keys = erlang:get(?dict_session_keys),
     erlang:put(?dict_session_keys, lists:delete(Key, Keys)).
 
 destory(Req) ->
-    SessionId = session_id(Req, false),
-    del(),
+    SessionId = erlang:get(?dict_session_id),
+    erlang:erase(?dict_session_id),
+
+    destory(),
+
     erlweb_session_srv:session_destory(SessionId),
-    cowboy_req:set_resp_cookie(?cookie_session_id, <<"">>, Req, #{path => <<"/">>}).
+    cowboy_req:set_resp_cookie(?cookie_session_id, <<>>, Req, #{path => <<"/">>}).
+destory() ->
+    Keys = erlang:get(?dict_session_keys),
+    [del(Key) || Key <- Keys],
+    erlang:erase(?dict_session_keys).
 
 
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
 
+%% 获取链接 session id
 session_id(Req) ->
-    session_id(Req, true).
-
-session_id(Req, true) ->
     case cowboy_req:match_cookies([{?cookie_session_id_atom, [], <<>>}], Req) of
-        #{?cookie_session_id_atom := SessionId} when SessionId =/= <<"">> ->
-            ?TOB(SessionId);
-        _ ->
-            ?TOB(erlweb_session_srv:session_new())
-    end;
-session_id(Req, false) ->
-    case cowboy_req:match_cookies([{?cookie_session_id_atom, [], <<>>}], Req) of
-        #{?cookie_session_id_atom := SessionId} when SessionId =/= <<"">> ->
-            ?TOB(SessionId);
-        _ ->
-            <<"0">>
+        #{?cookie_session_id_atom := SessionId} when SessionId =/= <<>> -> ?TOB(SessionId);
+        _ -> ?TOB(erlweb_session_srv:session_new())
     end.
-
 
 session_set(SessionId) ->
     SessionKeys	= erlang:get(?dict_session_keys),
