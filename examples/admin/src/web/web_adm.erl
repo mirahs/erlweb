@@ -39,11 +39,11 @@ check_login() ->
 %% 登录
 login(Req) ->
     {ok, Data, _Req2} = cowboy_req:read_urlencoded_body(Req),
-    _IP     = util_cowboy:ip(Req),
+    IP      = util_cowboy:ip(Req),
     Account = proplists:get_value(<<"account">>, Data),
     Password= proplists:get_value(<<"password">>, Data),
     case tbl_adm_user:get_by_account(Account) of
-        {ok, #{id := IdDb, password := PasswordDb, type := TypeDb}} ->
+        {ok, AdmUser = #{id := IdDb, password := PasswordDb, type := TypeDb}} ->
             case util:to_binary(util:md5(Password)) of
                 PasswordDb ->
                     Hash = login_key_rule(Account, Password),
@@ -54,10 +54,16 @@ login(Req) ->
                         ,{?session_type,		TypeDb}
                         ,{?session_hash,		Hash}
                     ]),
+                    login_update(AdmUser, IP),
+                    login_log(Account, IP, ?true),
                     {ok};
-                _ -> {error, "密码错误"}
+                _ ->
+                    login_log(Account, IP, ?false),
+                    {error, "密码错误"}
             end;
-        _ ->  {error, "账号不存在"}
+        _ ->
+            login_log(Account, IP, ?false),
+            {error, "账号不存在"}
     end.
 
 
@@ -87,3 +93,11 @@ get_type_name(Type) ->
 %% 登录 hash
 login_key_rule(Account, Password) ->
     crypto:hash(sha, util:to_list(Account) ++ util:to_list(Password)).
+
+%% 登录更新
+login_update(#{id := Id, login_times := LoginTimes}, Ip) ->
+    tbl_adm_user:update(Id, [{login_times, LoginTimes + 1}, {login_time, util:unixtime()}, {login_ip, Ip}]).
+
+%% 登录日志记录
+login_log(Account, Ip, Status) ->
+    tbl_log_adm_user_login:add([{account, Account}, {time, util:unixtime()}, {status, Status}, {ip, Ip}, {ip_segment, ""}, {address, ""}]).

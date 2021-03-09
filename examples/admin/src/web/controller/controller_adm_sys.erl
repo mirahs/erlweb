@@ -81,3 +81,21 @@ master_list(?web_get, Req, _Opts) ->
             Datas = lists:reverse(lists:foldl(Fun, [], Datas0)),
             {dtl, [{page, Page}, {datas, Datas}]}
     end.
+
+%% 登录日志
+log_login(?web_get, Req, _Opts) ->
+    Data= cowboy_req:parse_qs(Req),
+    Id  = proplists:get_value(<<"id">>, Data, <<>>),
+    ?IF(Id =:= <<>>, skip, begin tbl_log_adm_user_login:delete(Id), ?web_redirect end),
+
+    Account = proplists:get_value(<<"account">>, Data, <<>>),
+    Wheres  = ?IF(Account =:= <<>>, [], begin erlweb_tpl:assign(account, Account), [{account, Account}] end),
+
+    #{page := Page, datas := Datas0} = web_page:page_where(Req, log_adm_user_login, Wheres),
+    Fun = fun
+              (#{status := StatusF} = DataF, DatasAcc) ->
+                  StatusDesc = ?IF(StatusF =:= 1, "成功", "失败"),
+                  [DataF#{status_desc => StatusDesc} | DatasAcc]
+          end,
+    Datas = lists:reverse(lists:foldl(Fun, [], Datas0)),
+    {dtl, [{page, Page}, {datas, Datas}]}.

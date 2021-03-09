@@ -35,12 +35,6 @@
 %%% 数据类型与常量
 %%%===================================================================
 
-%% 时间
--define(DATE_SECONDS,   86400).
--define(DATE_MS,        86400000).
--define(HOUR_SECONDS,   3600).
--define(HOUR_MS,        3600000).
-
 %% 数字型 bool 值
 -define(true, 1).
 -define(false, 0).

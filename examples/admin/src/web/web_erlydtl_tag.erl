@@ -20,8 +20,8 @@ web_static_url(_Args) ->
 
 
 %% 格式化时间
-ymdhis([Seconds]) when is_integer(Seconds) andalso Seconds > 0 ->
-    date_YmdHis(Seconds);
+ymdhis([Unixtime]) when is_integer(Unixtime) andalso Unixtime > 0 ->
+    date_YmdHis(Unixtime);
 ymdhis(_Args) ->
     "1970-01-01 00:00:00".
 
@@ -37,5 +37,5 @@ ymd(_Args) ->
 %%%===================================================================
 
 date_YmdHis(Seconds) ->
-    {{Y,M,D}, {H,I,S}} = util:seconds2localtime(Seconds),
+    {{Y,M,D}, {H,I,S}} = util:unixtime2localtime(Seconds),
     util:to_list(Y) ++ "-" ++ util:date_format(M) ++ "-" ++ util:date_format(D) ++ " " ++ util:date_format(H) ++ ":" ++  util:date_format(I) ++ ":" ++ util:date_format(S).
