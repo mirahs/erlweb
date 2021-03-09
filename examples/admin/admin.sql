@@ -30,12 +30,12 @@ CREATE TABLE IF NOT EXISTS `adm_user` (
   `password` char(32) NOT NULL COMMENT '密码',
   `type` tinyint(3) unsigned NOT NULL COMMENT '类型 10:管理员|20:游客',
 
-  `lock` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '锁定状态 0:未锁|1:锁住',
+  `is_locked` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '是否被锁住 0:否|1:是',
   `note` text NOT NULL COMMENT '备注',
 
   `login_times` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
-  `login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后登录时间',
-  `login_ip` char(15) NOT NULL DEFAULT '' COMMENT '最后登录IP',
+  `login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
+  `login_ip` char(15) NOT NULL DEFAULT '' COMMENT '登录IP',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account` (`account`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台账号';

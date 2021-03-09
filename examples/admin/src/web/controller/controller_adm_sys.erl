@@ -65,18 +65,18 @@ master_list(?web_get, Req, _Opts) ->
             case web_adm:get_id() of
                 Id -> {error, "不能操作自己"};
                 _ ->
-                    Lock0   = proplists:get_value(<<"lock">>, Data),
-                    Lock    = ?IF(Lock0 =:= <<"1">>, 0, 1),
-                    tbl_adm_user:update(Id, [{lock, Lock}]),
+                    IsLocked0   = proplists:get_value(<<"is_locked">>, Data),
+                    Locked      = ?IF(IsLocked0 =:= <<"1">>, 0, 1),
+                    tbl_adm_user:update(Id, [{is_locked, Locked}]),
                     ?web_redirect
             end;
         _ ->
             #{page := Page, datas := Datas0} = web_page:page(Req, adm_user),
             Fun = fun
-                      (#{type := TypeF, lock := LockF} = DataF, DatasAcc) ->
-                          TypeDesc = maps:get(TypeF, ?adm_user_types_desc),
-                          LockDesc = ?IF(LockF =:= 0, "锁定", "解锁"),
-                          [DataF#{type_desc => TypeDesc, lock_desc => LockDesc} | DatasAcc]
+                      (#{type := TypeF, is_locked := IsLockedF} = DataF, DatasAcc) ->
+                          TypeDesc      = maps:get(TypeF, ?adm_user_types_desc),
+                          IsLockedDesc  = ?IF(IsLockedF =:= 0, "锁住", "解锁"),
+                          [DataF#{type_desc => TypeDesc, is_locked_desc => IsLockedDesc} | DatasAcc]
                   end,
             Datas = lists:reverse(lists:foldl(Fun, [], Datas0)),
             {dtl, [{page, Page}, {datas, Datas}]}
