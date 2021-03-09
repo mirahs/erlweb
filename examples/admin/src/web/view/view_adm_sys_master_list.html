@@ -2,43 +2,43 @@
 
 {% block body %}
 <div class="container">
-	<table class="layui-table">
-		<thead>
-		<tr>
-			<th>账号</th>
-			<th>类型</th>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>账号</th>
+            <th>类型</th>
 
-			<th>登陆次数</th>
-			<th>最后登陆时间</th>
-			<th>最后登陆IP</th>
-			<th>状态</th>
-			<th>备注</th>
-			<th>功能</th>
-		</tr>
-		</thead>
-		<tbody>
-		{% for data in datas %}
-		<tr id="{{ data.id }}">
-			<td style="color:#00F; font-weight:bold;">{{ data.account }}</td>
-			<td>{{ data.type_desc }}</td>
+            <th>登陆次数</th>
+            <th>最后登陆时间</th>
+            <th>最后登陆IP</th>
+            <th>状态</th>
+            <th>备注</th>
+            <th>功能</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in datas %}
+        <tr id="{{ data.id }}">
+            <td style="color:#00F; font-weight:bold;">{{ data.account }}</td>
+            <td>{{ data.type_desc }}</td>
 
-			<td>{{ data.login_times }}</td>
-			<td>{% ymdhis data.login_time %}</td>
-			<td>{{ data.login_ip }}</td>
-			<td><a class="layui-btn layui-btn-normal layui-btn-xs" href="?act=lock&id={{ data.id }}&lock={{ data.lock }}">{{ data.lock_desc }}</a></td>
-			<td><a class="layui-btn layui-btn-normal layui-btn-xs" lay-submit lay-filter="btnUpdateNote">{{ data.note }}</a></td>
-			<td>
-				<div class="layui-btn-group">
-					<a class="layui-btn layui-btn-danger layui-btn-xs" href="password?account={{ data.account }}">重置密码</a>
-					<a class="layui-btn layui-btn-info layui-btn-xs" href="master_new?id={{ data.id }}">修改</a>
-					<a class="layui-btn layui-btn-danger layui-btn-xs" href="?act=del&id={{ data.id }}" onclick="return msg_yn();">删除</a>
-				</div>
-			</td>
-		</tr>
-		{% endfor %}
-		</tbody>
-	</table>
-	<div id="page"></div>
+            <td>{{ data.login_times }}</td>
+            <td>{% ymdhis data.login_time %}</td>
+            <td>{{ data.login_ip }}</td>
+            <td><a class="layui-btn layui-btn-normal layui-btn-xs" href="?act=lock&id={{ data.id }}&lock={{ data.lock }}">{{ data.lock_desc }}</a></td>
+            <td><a class="layui-btn layui-btn-normal layui-btn-xs" lay-submit lay-filter="btnUpdateNote">{{ data.note }}</a></td>
+            <td>
+                <div class="layui-btn-group">
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" href="password?account={{ data.account }}">重置密码</a>
+                    <a class="layui-btn layui-btn-info layui-btn-xs" href="master_new?id={{ data.id }}">修改</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" href="?act=del&id={{ data.id }}" onclick="return msg_yn();">删除</a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div id="page"></div>
 </div>
 {% endblock %}
 
@@ -52,21 +52,21 @@
 
 
         laypage.render({
-            elem: 'page' //注意，这里的 page 是 ID，不用加 # 号
-            ,count: {{ page.count }} //数据总数，从服务端得到
-    ,curr: {{ page.curr }} //服务器端回传当前页
-    ,limit: {{ page.limit }}
-    ,layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+            elem: 'page' //这里的 page 是 ID，不用加 # 号
+            ,count: '{{ page.count }}' //数据总数
+            ,curr: '{{ page.curr }}' //当前页
+            ,limit: '{{ page.limit }}' //每页显示的条数
+            ,layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
             ,jump: function (obj, first){
-            // obj包含了当前分页的所有参数，比如：
-            console.log(obj.curr);  //得到当前页，以便向服务端请求对应页的数据。
-            console.log(obj.limit); //得到每页显示的条数
-            // 首次不执行,使用原始的curr,后面需要自己通过回传来更新
-            if (!first) {
-                location.href='?page=' + obj.curr + '&limit=' + obj.limit + '{{ page.query }}';
+                // obj包含了当前分页的所有参数，比如：
+                console.log(obj.curr);  //得到当前页，以便向服务端请求对应页的数据。
+                console.log(obj.limit); //得到每页显示的条数
+                // 首次不执行,使用原始的curr,后面需要自己通过回传来更新
+                if (!first) {
+                    location.href='?page=' + obj.curr + '&limit=' + obj.limit + '{{ page.query }}';
+                }
             }
-        }
-    });
+        });
     });
 </script>
 {% endblock %}
