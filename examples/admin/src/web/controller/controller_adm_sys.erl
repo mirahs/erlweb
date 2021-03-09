@@ -23,6 +23,32 @@ password(?web_post, Req, _Opts) ->
     tbl_adm_user:update_by_account(Account, [{password, util:md5(util:md5(Password))}]),
     web:echo_success().
 
+%% 添加管理员
+master_new(?web_get, Req, _Opts) ->
+    Data= cowboy_req:parse_qs(Req),
+    Id  = proplists:get_value(<<"id">>, Data, <<>>),
+    ?IF(Id =:= <<>>, skip, begin {ok, AdmUser} = tbl_adm_user:get(Id), erlweb_tpl:assign(data, AdmUser) end),
+
+    Type= web_adm:get_type(),
+    UserTypes = [{UT, UD} || {UT, UD} <- maps:to_list(?adm_user_types_desc),  UT >= Type],
+    {dtl, [{user_types, UserTypes}]};
+master_new(?web_post, Req, _Opts) ->
+    {ok, Data, _Req2} = cowboy_req:read_urlencoded_body(Req),
+    Id      = proplists:get_value(<<"id">>, Data, <<>>),
+    Account = proplists:get_value(<<"account">>, Data, <<>>),
+    Type    = proplists:get_value(<<"type">>, Data, <<>>),
+    Note    = proplists:get_value(<<"note">>, Data, <<>>),
+    ?IF(Account =:= <<>> orelse Type =:= <<>> orelse Note =:= <<>>, ?web_failed("请输入正确的数据"), skip),
+    Bind = [{account, Account}, {type, Type}, {note, Note}],
+    case Id of
+        <<>> ->
+            Password = util:md5(util:md5("123456")),
+            Bind2 = [{password, Password} | Bind],
+            tbl_adm_user:add(Bind2);
+        _ -> tbl_adm_user:update(Id, Bind)
+    end,
+    web:echo_success().
+
 %% 管理员列表
 master_list(?web_get, Req, _Opts) ->
     Data= cowboy_req:parse_qs(Req),
@@ -39,8 +65,8 @@ master_list(?web_get, Req, _Opts) ->
             case web_adm:get_id() of
                 Id -> {error, "不能操作自己"};
                 _ ->
-                    Lock0   = proplists:get_value(<<"id">>, Data),
-                    Lock    = ?IF(Lock0 =:= <<"1">>, 0, 1),
+                    Lock0   = proplists:get_value(<<"lock">>, Data),
+                    Lock    = ?IF(Lock0 =:= <<"1">>, 0, 1),?DEBUG("dsf:~p", [{Lock0, Lock}]),
                     tbl_adm_user:update(Id, [{lock, Lock}]),
                     ?web_redirect
             end;

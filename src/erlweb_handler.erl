@@ -17,7 +17,9 @@ init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionA
     case Dispatcher:get(Path, AppB, ModuleB, FuncB) of
         {ok, PH} ->
             try
+                erlweb_tpl:init(),
                 {ok, Req2, State2} = handle_do(Method, Req, State, PH),
+                erlweb_tpl:destroy(),
                 Req3 = ?IF(lists:member(AppB, SessionApps), erlweb_session:on_response(Req2), Req2),
                 {ok, Req3, State2}
             catch
@@ -78,7 +80,8 @@ handle_do(Method, Req, State, #{controller := Module, func := Func, dtl := Dtl, 
 
 
 handle_do_dtl(Req, Opts, DtlA, DtlKeyValues) ->
-    {ok, Html} = DtlA:render(DtlKeyValues),
+    Datas = erlweb_tpl:get(),
+    {ok, Html} = DtlA:render(DtlKeyValues ++ Datas),
     Req3 = cowboy_req:reply(200, #{<<"content-type">> => <<"text/html;charset=utf-8">>}, Html, Req),
     {ok, Req3, Opts}.
 
