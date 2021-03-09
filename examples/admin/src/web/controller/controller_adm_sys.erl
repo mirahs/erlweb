@@ -6,6 +6,7 @@
 
 -include("common.hrl").
 -include("web.hrl").
+-include("web_adm.hrl").
 
 
 %% 密码更新
@@ -21,3 +22,15 @@ password(?web_post, Req, _Opts) ->
     ?IF(Account =:= <<>> orelse Password =:= <<>>, ?web_failed("请输入正确的数据"), skip),
     tbl_adm_user:update_password_by_account(Account, util:md5(util:md5(Password))),
     web:echo_success().
+
+%% 管理员列表
+master_list(?web_get, Req, _Opts) ->
+    #{page := Page, datas := Datas0} = web_page:page(Req, adm_user),
+    Fun = fun
+              (#{type := TypeF, lock := LockF} = Data, DatasAcc) ->
+                  TypeDesc = maps:get(TypeF, ?adm_user_types_desc),
+                  LockDesc = ?IF(LockF =:= 0, "锁定", "解锁"),
+                  [Data#{type_desc => TypeDesc, lock_desc => LockDesc} | DatasAcc]
+          end,
+    Datas = lists:reverse(lists:foldl(Fun, [], Datas0)),
+    {dtl, [{page, Page}, {datas, Datas}]}.

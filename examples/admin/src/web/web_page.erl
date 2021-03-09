@@ -60,7 +60,7 @@ get_count(Table, Fields, Wheres) ->
     Count.
 
 get_distinct([]) -> false;
-get_distinct(Fields) ->
+get_distinct(Fields = [_|_]) ->
     get_distinct2(Fields);
 get_distinct(_Fields) -> false.
 get_distinct2([]) -> false;
@@ -69,10 +69,10 @@ get_distinct2([_Field | Fields]) ->
     get_distinct2(Fields).
 
 page_query(Data0) ->
-    Data2   = maps:remove(<<"page">>, Data0),
-    Data    = maps:remove(<<"limit">>, Data2),
+    Data2   = lists:keydelete(<<"page">>, 1, Data0),
+    Data    = lists:keydelete(<<"limit">>, 1, Data2),
     Fun     = fun({K, V}, Acc) ->[util:to_list(K) ++ "=" ++ util:to_list(V) | Acc] end,
-    Querys  = lists:foldl(Fun, [], maps:to_list(Data)),
+    Querys  = lists:foldl(Fun, [], Data),
     "&" ++ mysql_util:list_to_string(Querys, "", "&", "").
 
 
@@ -89,7 +89,7 @@ format_where(Wheres) ->
     end.
 
 format_order([]) -> "";
-format_order(Orders) when is_list(Orders) ->
+format_order(Orders = [_|_]) ->
     Fun = fun
               ({Field, Order}, OrderAcc) -> ["`" ++ util:to_list(Field) ++ "` " ++ util:to_list(Order) | OrderAcc];
               (Field, OrderAcc) -> ["`" ++ util:to_list(Field) ++ "`" | OrderAcc]
@@ -100,7 +100,7 @@ format_order(Order) ->
     "ORDER BY `" ++ mysql_util:to_list(Order) ++ "`".
 
 format_group([]) -> "";
-format_group(Groups) when is_list(Groups) ->
+format_group(Groups = [_|_]) ->
     "GROUP BY " ++ mysql_util:list_to_string(Groups, "`", "`,`", "`");
 format_group(Group) ->
     "GROUP BY `" ++ mysql_util:to_list(Group) ++ "`".

@@ -25,7 +25,7 @@
 			<td>{{ data.login_times }}</td>
 			<td>{% ymdhis data.login_time %}</td>
 			<td>{{ data.login_ip }}</td>
-			<td><a href="?act=lock&id={{ data.id }}&lock={{ data.lock }}">{{ data.lock_desc }}</a></td>
+			<td><a class="layui-btn layui-btn-normal layui-btn-xs" href="?act=lock&id={{ data.id }}&lock={{ data.lock }}">{{ data.lock_desc }}</a></td>
 			<td><a class="layui-btn layui-btn-normal layui-btn-xs" lay-submit lay-filter="btnUpdateNote">{{ data.note }}</a></td>
 			<td>
 				<div class="layui-btn-group">
@@ -38,6 +38,7 @@
 		{% endfor %}
 		</tbody>
 	</table>
+	<div id="page"></div>
 </div>
 {% endblock %}
 
@@ -45,4 +46,27 @@
 {% block body_js %}
 <script src="{% web_static_url %}js/app.js"></script>
 <script src="{% web_static_url %}layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['laypage'], function () {
+        const laypage = layui.laypage;
+
+
+        laypage.render({
+            elem: 'page' //注意，这里的 page 是 ID，不用加 # 号
+            ,count: {{ page.count }} //数据总数，从服务端得到
+    ,curr: {{ page.curr }} //服务器端回传当前页
+    ,limit: {{ page.limit }}
+    ,layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+            ,jump: function (obj, first){
+            // obj包含了当前分页的所有参数，比如：
+            console.log(obj.curr);  //得到当前页，以便向服务端请求对应页的数据。
+            console.log(obj.limit); //得到每页显示的条数
+            // 首次不执行,使用原始的curr,后面需要自己通过回传来更新
+            if (!first) {
+                location.href='?page=' + obj.curr + '&limit=' + obj.limit + '{{ page.query }}';
+            }
+        }
+    });
+    });
+</script>
 {% endblock %}
