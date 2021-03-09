@@ -39,7 +39,7 @@
 -define(web_error(Msg),				erlang:error({error, Msg})).
 -define(web_error(Msg, Url),		erlang:error({error, Msg, Url})).
 -define(web_failed(Msg),		    erlang:error(web:echo_failed(Msg))).
--define(web_redirect(),				erlang:error({redirect})).
+-define(web_redirect,				erlang:error({redirect})).
 -define(web_redirect(Url),			erlang:error({redirect, Url})).
 
 -record(web_path2mfd, {

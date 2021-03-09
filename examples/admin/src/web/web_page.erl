@@ -8,8 +8,6 @@
     ,page_order/3
     ,page_group/4
     ,page/6
-
-    ,page_query/1
 ]).
 
 -include("common.hrl").

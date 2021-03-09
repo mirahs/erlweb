@@ -26,7 +26,7 @@
             <td>{% ymdhis data.login_time %}</td>
             <td>{{ data.login_ip }}</td>
             <td><a class="layui-btn layui-btn-normal layui-btn-xs" href="?act=lock&id={{ data.id }}&lock={{ data.lock }}">{{ data.lock_desc }}</a></td>
-            <td><a class="layui-btn layui-btn-normal layui-btn-xs" lay-submit lay-filter="btnUpdateNote">{{ data.note }}</a></td>
+            <td>{{ data.note }}</td>
             <td>
                 <div class="layui-btn-group">
                     <a class="layui-btn layui-btn-danger layui-btn-xs" href="password?account={{ data.account }}">重置密码</a>
@@ -59,8 +59,8 @@
             ,layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
             ,jump: function (obj, first){
                 // obj包含了当前分页的所有参数，比如：
-                console.log(obj.curr);  //得到当前页，以便向服务端请求对应页的数据。
-                console.log(obj.limit); //得到每页显示的条数
+                // console.log(obj.curr);  //得到当前页，以便向服务端请求对应页的数据。
+                // console.log(obj.limit); //得到每页显示的条数
                 // 首次不执行,使用原始的curr,后面需要自己通过回传来更新
                 if (!first) {
                     location.href='?page=' + obj.curr + '&limit=' + obj.limit + '{{ page.query }}';
