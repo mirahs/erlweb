@@ -66,7 +66,7 @@ master_list(?web_get, Req, _Opts) ->
                 Id -> {error, "不能操作自己"};
                 _ ->
                     Lock0   = proplists:get_value(<<"lock">>, Data),
-                    Lock    = ?IF(Lock0 =:= <<"1">>, 0, 1),?DEBUG("dsf:~p", [{Lock0, Lock}]),
+                    Lock    = ?IF(Lock0 =:= <<"1">>, 0, 1),
                     tbl_adm_user:update(Id, [{lock, Lock}]),
                     ?web_redirect
             end;
