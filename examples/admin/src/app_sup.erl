@@ -27,4 +27,4 @@ init([]) ->
 
     ErlWeb  = {erlweb_sup, {erlweb_sup, start_link, [WebArg]}, permanent, infinity, supervisor, [erlweb_sup]},
 
-    {ok, {{one_for_one, 10, 1}, [ErlWeb]}}.
+    {ok, {{one_for_one, 10, 10}, [ErlWeb]}}.

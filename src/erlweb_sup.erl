@@ -13,8 +13,6 @@
 
 -include("erlweb.hrl").
 
--define(CHILD(I, Type), {I, {I, start_link, []}, permanent, 5000, Type, [I]}).
-
 
 %%%===================================================================
 %%% API
@@ -43,8 +41,8 @@ init([ArgMap2]) ->
         _ -> {ok, _}	= cowboy:start_clear(erlweb, TransOpts, ProtoOpts)
     end,
 
-    Session	= ?CHILD(erlweb_session_mgr, worker),
-    {ok, {{one_for_one, 10, 5}, [Session]} }.
+    Session = {erlweb_session_mgr, {erlweb_session_mgr, start_link, []}, permanent, 5000, worker, [erlweb_session_mgr]},
+    {ok, {{one_for_one, 10, 10}, [Session]} }.
 
 
 %%%===================================================================
