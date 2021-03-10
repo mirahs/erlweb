@@ -62,7 +62,7 @@ handle_call(new, _From, State) ->
 handle_call({get, Sid}, _From, State) ->
     Data =
         case ets:lookup(?MODULE, Sid) of
-            [#session{data = Data}] -> Data;
+            [#session{data = Data0}] -> Data0;
             [] -> []
         end,
     {reply, Data, State}.
