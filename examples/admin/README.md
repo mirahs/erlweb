@@ -1,12 +1,21 @@
-## 框架基础使用
+## 管理后台模板
 
-## 使用方法
-编辑项目(只需要运行一次)
+## MySQL 配置
+- 修改 common.hrl 头文件 mysql_username、mysql_password、mysql_database
+- 导入 admin.sql 文件
+
+## 项目编译及启动
+编译(开发版)
 ```shell
-sh make.sh
+sh dev.sh dev
 ```
 
-启动项目
+编译(正式版)
 ```shell
-sh start.sh 
+sh dev.sh rel
+```
+
+启动
+```shell
+sh dev.sh start
 ```

@@ -10,6 +10,8 @@
     ,to_float/1
     ,to_integer/1
     ,to_tuple/1
+
+    ,list_to_string/4
     ,list_to_atom/1
 
     ,unixtime/0
@@ -98,7 +100,27 @@ to_integer(_Msg) ->
 to_tuple(T) when is_tuple(T) -> T;
 to_tuple(T) -> {T}.
 
-%% list2atom 优化
+
+%%%===================================================================
+%%% 系统加强
+%%%===================================================================
+
+%% 数组转成字符串
+%% List -> String
+%% H 附加在开头
+%% M 夹在中间
+%% T 附加在尾部
+list_to_string([], _H, _M, _T) ->
+    [];
+list_to_string([HList|TList], H, M, T) ->
+    list_to_string(TList, H, M, T, H ++ to_list(HList)).
+
+list_to_string([], _H, _M, T, Str) ->
+    Str ++ T;
+list_to_string([HList|TList], H, M, T, Str) ->
+    list_to_string(TList, H, M, T, Str ++ M ++ to_list(HList)).
+
+%% list 转 atom 优化
 list_to_atom(List)->
     try
         erlang:list_to_existing_atom(List)

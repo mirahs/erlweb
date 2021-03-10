@@ -9,8 +9,6 @@
     ,init/1
 ]).
 
--include("common.hrl").
-
 
 %%%===================================================================
 %%% API
@@ -25,10 +23,8 @@ start_link() ->
 %%%===================================================================
 
 init([]) ->
-    mysql:add_pool(?db_admin, "root", "root", "admin"),
+    WebArg  = web:init(),
 
-    WebArg = web:init(),
-
-    ErlWeb = {erlweb_sup, {erlweb_sup, start_link, [WebArg]}, permanent, 10000, supervisor, [erlweb_sup]},
+    ErlWeb  = {erlweb_sup, {erlweb_sup, start_link, [WebArg]}, permanent, infinity, supervisor, [erlweb_sup]},
 
     {ok, {{one_for_one, 10, 1}, [ErlWeb]}}.

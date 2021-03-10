@@ -27,8 +27,11 @@
 -define(DIR_PRIV,   ?DIR_ROOT ++ "priv/").
 
 
-%% MySQL 数据库 ID
--define(db_admin,	db_admin).
+%% MySQL 数据库
+-define(db_admin,       db_admin). % 数据库池 ID
+-define(mysql_username, "root").    % 账号
+-define(mysql_password, "root").    % 密码
+-define(mysql_database, "admin").   % 数据库
 
 
 %%%===================================================================
