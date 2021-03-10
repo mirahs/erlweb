@@ -9,6 +9,10 @@
 -include("erlweb.hrl").
 
 
+%%%===================================================================
+%%% API
+%%%===================================================================
+
 init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionApps, dispatcher := Dispatcher}) ->
     AppB = cowboy_req:binding(app, Req),
     ModuleB	= cowboy_req:binding(module, Req),
@@ -36,6 +40,10 @@ init(Req = #{path := Path, method := Method}, State = #{session_apps := SessionA
 terminate(_Reason, _Req, _State) ->
     ok.
 
+
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
 
 handle_do(Method, Req, State, #{controller := Module, func := Func, dtl := Dtl, dtle := DtlEdit}) ->
     try Module:Func(Method, Req, State) of
@@ -88,14 +96,14 @@ handle_do_dtl(Req, Opts, DtlA, DtlKeyValues) ->
 handle_do_error(Req, Opts, Msg) ->
     handle_do_error(Req, Opts, Msg, cowboy_req:path(Req)).
 handle_do_error(Req, Opts, Msg, Url) ->
-    Content = <<"<script type=\"text/javascript\">alert('", ?B(Msg) ,"');</script>">>,
-    Req2	= cowboy_req:reply(200, #{<<"refresh">> => <<"0;url=\"", ?B(Url), "\"">>, <<"content-type">> => <<"text/html; charset=utf-8">>}, Content, Req),
+    Content = <<"<script type=\"text/javascript\">alert('", (erlweb_util:to_binary(Msg))/binary ,"');</script>">>,
+    Req2	= cowboy_req:reply(200, #{<<"refresh">> => <<"0;url=\"", (erlweb_util:to_binary(Url))/binary, "\"">>, <<"content-type">> => <<"text/html; charset=utf-8">>}, Content, Req),
     {ok, Req2, Opts}.
 
 handle_do_redirect(Req, State) ->
     handle_do_redirect(Req, State, cowboy_req:path(Req)).
 handle_do_redirect(Req, State, Url) ->
-    Req2 = cowboy_req:reply(303, #{<<"location">> => ?TOB(Url)}, <<>>, Req),
+    Req2 = cowboy_req:reply(303, #{<<"location">> => erlweb_util:to_binary(Url)}, <<>>, Req),
     {ok, Req2, State}.
 
 

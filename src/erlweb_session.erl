@@ -35,7 +35,7 @@ execute(Req, Env = #{handler_opts := #{session_apps := SessionApps}}) ->
             erlang:erase(?dict_session_id),
             case cowboy_req:match_cookies([{?cookie_session_id_atom, [], <<>>}], Req) of
                 #{?cookie_session_id_atom := SessionId} when SessionId =/= <<>> ->
-                    SessionData	= erlweb_session_srv:session_get(SessionId),
+                    SessionData	= erlweb_session_mgr:get(SessionId),
                     %?INFO("SessionId:~p", [SessionId]),
                     %?INFO("SessionData:~p", [SessionData]),
                     SessionKeys = [begin erlang:put(Key, Value), Key end || {Key, Value} <- SessionData],
@@ -96,7 +96,7 @@ destory(Req) ->
 
     destory(),
 
-    erlweb_session_srv:session_destory(SessionId),
+    erlweb_session_mgr:destory(SessionId),
     cowboy_req:set_resp_cookie(?cookie_session_id, <<>>, Req, #{path => <<"/">>}).
 destory() ->
     Keys = erlang:get(?dict_session_keys),
@@ -111,11 +111,11 @@ destory() ->
 %% 获取链接 session id
 session_id(Req) ->
     case cowboy_req:match_cookies([{?cookie_session_id_atom, [], <<>>}], Req) of
-        #{?cookie_session_id_atom := SessionId} when SessionId =/= <<>> -> ?TOB(SessionId);
-        _ -> ?TOB(erlweb_session_srv:session_new())
+        #{?cookie_session_id_atom := SessionId} when SessionId =/= <<>> -> SessionId;
+        _ -> erlweb_util:to_binary(erlweb_session_mgr:new())
     end.
 
 session_set(SessionId) ->
     SessionKeys	= erlang:get(?dict_session_keys),
     SessionData	= [{Key, erlang:get(Key)} || Key <- SessionKeys],%?INFO("SessionData:~p", [SessionData]),
-    erlweb_session_srv:session_set(SessionId, SessionData).
+    erlweb_session_mgr:set(SessionId, SessionData).

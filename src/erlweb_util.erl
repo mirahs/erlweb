@@ -2,7 +2,9 @@
 -module(erlweb_util).
 
 -export([
-    to_atom/1
+    load_module/1
+
+    ,to_atom/1
     ,to_list/1
     ,to_binary/1
     ,to_float/1
@@ -10,10 +12,28 @@
     ,to_tuple/1
 
     ,list_to_atom/1
-    ,load_module/1
 ]).
 
 -include("erlweb.hrl").
+
+
+%%%===================================================================
+%%% API
+%%%===================================================================
+
+%% 加载模块
+load_module(Module) ->
+    case erlang:module_loaded(Module) of
+        true -> true;
+        false ->
+            code:purge(Module),
+            case code:load_file(Module) of
+                {module, Module} -> true;
+                {error, Reason} ->
+                    ?ERR("(~p) load fail : ~p~n", [Module, Reason]),
+                    false
+            end
+    end.
 
 
 %%%===================================================================
@@ -83,24 +103,14 @@ to_tuple(T) when is_tuple(T) -> T;
 to_tuple(T) -> {T}.
 
 
-%% list2atom 优化
+%%%===================================================================
+%%% 系统加强
+%%%===================================================================
+
+%% list 转 atom 优化
 list_to_atom(List)->
     try
         erlang:list_to_existing_atom(List)
     catch _:_ ->
         erlang:list_to_atom(List)
-    end.
-
-%% 加载模块
-load_module(Module) ->
-    case erlang:module_loaded(Module) of
-        true -> true;
-        false ->
-            code:purge(Module),
-            case code:load_file(Module) of
-                {module, Module} -> true;
-                {error, Reason} ->
-                    ?ERR("(~p) load fail : ~p~n", [Module, Reason]),
-                    false
-            end
     end.

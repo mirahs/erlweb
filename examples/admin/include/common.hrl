@@ -1,6 +1,21 @@
 %%% -*- coding: latin-1 -*-
 
 %%%===================================================================
+%%% 配置
+%%%===================================================================
+
+%% 目录
+-define(DIR_ROOT,   "./").
+-define(DIR_PRIV,   ?DIR_ROOT ++ "priv/").
+
+%% MySQL 数据库
+-define(db_admin,       db_admin). % 数据库池 ID
+-define(mysql_username, "root").    % 账号
+-define(mysql_password, "root").    % 密码
+-define(mysql_database, "admin").   % 数据库
+
+
+%%%===================================================================
 %%% 日志记录
 %%%===================================================================
 
@@ -19,22 +34,6 @@
 
 
 %%%===================================================================
-%%% 配置
-%%%===================================================================
-
-%% 目录
--define(DIR_ROOT,   "./").
--define(DIR_PRIV,   ?DIR_ROOT ++ "priv/").
-
-
-%% MySQL 数据库
--define(db_admin,       db_admin). % 数据库池 ID
--define(mysql_username, "root").    % 账号
--define(mysql_password, "root").    % 密码
--define(mysql_database, "admin").   % 数据库
-
-
-%%%===================================================================
 %%% 数据类型与常量
 %%%===================================================================
 
@@ -47,27 +46,4 @@
 %%% 函数封装
 %%%===================================================================
 
-%% 转二进制 简写
--define(B(D),   (util:to_binary(D))/binary).
-
-%% 函数封装
--define(IF(B,T,F),  case (B) of true -> (T); false -> (F) end).
-
-%% 带catch的gen_server:call/2，返回{error, timeout} | {error, noproc} | {error, term()} | term() | {exit, normal}
-%% 此宏只会返回简略信息，如果需要获得更详细的信息，请使用以下方式自行处理:
--define(CALL(Pid, Req),
-    case catch gen_server:call(Pid, Req) of
-        {'EXIT', {timeout, _}} -> {error, timeout};
-        {'EXIT', {noproc, _}} -> {error, noproc};
-        {'EXIT', normal} -> {exit, normal};
-        {'EXIT', ReasonErr} -> {error, ReasonErr};
-        Rtn -> Rtn
-    end).
-
--define(GCALL(Pid, Req),
-    case catch gen_server:call(Pid, Req) of
-        {'EXIT', Err} ->
-            ?ERR("gen_server call error(~w)", [Err]),
-            {false, err_server_busy};
-        Rtn -> Rtn
-    end).
+-define(IF(B, T, F),case (B) of true -> (T); false -> (F) end).

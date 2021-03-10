@@ -43,7 +43,7 @@ init([ArgMap2]) ->
         _ -> {ok, _}	= cowboy:start_clear(erlweb, TransOpts, ProtoOpts)
     end,
 
-    Session	= ?CHILD(erlweb_session_srv, worker),
+    Session	= ?CHILD(erlweb_session_mgr, worker),
     {ok, {{one_for_one, 10, 5}, [Session]} }.
 
 
