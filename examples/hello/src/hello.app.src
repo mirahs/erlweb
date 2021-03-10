@@ -1,8 +1,0 @@
-{application, hello,
-	[
-		{description,	"hello"},
-		{vsn, 			"1.0"},
-		{applications,	[kernel, stdlib, erlweb]},
-		{mod,			{hello_app, []}}
-	]
-}.

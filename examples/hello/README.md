@@ -1,12 +1,11 @@
 ## 框架基础使用
 
-## 使用方法
-编辑项目(只需要运行一次)
+编译项目
 ```shell
-sh make.sh
+sh dev.sh make
 ```
 
 启动项目
 ```shell
-sh start.sh 
+sh dev.sh start
 ```

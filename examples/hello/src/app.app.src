@@ -1,0 +1,13 @@
+{application, app,
+	[
+		{description,	"hello app"},
+		{vsn, 			"1.0"},
+		{applications,	[
+			kernel
+			,stdlib
+
+			,erlweb
+		]},
+		{mod,			{app_app, []}}
+	]
+}.

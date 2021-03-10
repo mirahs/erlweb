@@ -1,4 +1,4 @@
--module(hello_sup).
+-module(app_sup).
 
 -behaviour(supervisor).
 
@@ -10,7 +10,6 @@
 
 -define(PORT, 1111).            % web 端口
 -define(SESSION_APP, <<"adm">>).% 需要做 session 处理的 app, 多个配置成列表 [<<"adm">>, <<"cp">>]
--define(CHILD(I, Type, Args), {I, {I, start_link, Args}, permanent, 5000, Type, [I]}).
 
 
 start_link() ->
@@ -18,8 +17,7 @@ start_link() ->
 
 
 init([]) ->
-    MapArg = erlweb:init_session(?PORT, ?SESSION_APP),
-    ErlWeb = ?CHILD(erlweb_sup, supervisor, [MapArg]),
+    WebArg  = erlweb:init_session(?PORT, ?SESSION_APP),
+    ErlWeb  = {erlweb_sup, {erlweb_sup, start_link, [WebArg]}, permanent, infinity, supervisor, [erlweb_sup]},
 
-    Strategy = {one_for_one, 10, 1},
-    {ok, {Strategy, [ErlWeb]}}.
+    {ok, {{one_for_one, 10, 10}, [ErlWeb]}}.

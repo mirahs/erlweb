@@ -1,4 +1,5 @@
--module(hello_app).
+%% -*- coding: latin-1 -*-
+-module(app_app).
 
 -behaviour(application).
 
@@ -9,7 +10,8 @@
 
 
 start(_StartType, _StartArgs) ->
-	hello_sup:start_link().
+	app_sup:start_link().
 
 stop(_State) ->
+    erlweb:stop(),
 	ok.
