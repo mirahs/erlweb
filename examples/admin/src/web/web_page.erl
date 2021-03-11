@@ -83,8 +83,8 @@ format_where(Wheres) ->
     {FieldList, DataList} = lists:unzip(Wheres),
     FieldString = util:list_to_string(FieldList, "`", "`=~s,`", "`=~s"),
     case mysql:format(FieldString, DataList) of
-        <<>> -> "";
-        WhereStr -> " WHERE " ++ util:to_list(WhereStr)
+        "" -> "";
+        WhereStr -> " WHERE " ++ WhereStr
     end.
 
 format_order([]) -> "";
