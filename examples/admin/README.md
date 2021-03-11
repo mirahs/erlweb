@@ -1,7 +1,7 @@
 ## 管理后台模板
 
 ## MySQL 配置
-- 修改 common.hrl 头文件 mysql_username、mysql_password、mysql_database
+- 修改 include/common.hrl 头文件 mysql_username、mysql_password、mysql_database 宏定义
 - 导入 admin.sql 文件
 
 ## 项目编译及启动
