@@ -10,7 +10,7 @@
 %% 菜单-首页
 -define(web_menu_home, [
     #{code => welcome,      name => "欢迎",           url => "home/welcome",      key => [10,20]},
-    #{code => clear,        name => "清除网站缓存",   url => "home/clear",        key => [10]}
+    #{code => menu_update,  name => "菜单更新",       url => "home/menu_update",  key => [10]}
 ]).
 
 %% 菜单-管理

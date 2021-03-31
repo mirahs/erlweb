@@ -12,12 +12,12 @@
 welcome(_Method, _Req, _OPts) ->
     {text, "welcome"}.
 
-%% 清除网站缓存
-clear(_Method, Req, _OPts) ->
+%% 菜单更新
+menu_update(_Method, Req, _OPts) ->
     Data = cowboy_req:parse_qs(Req),
     case proplists:get_value(<<"act">>, Data) of
-        <<"clear">> ->
-            web:clear_cache(),
-            {error, "成功清除缓存"};
+        <<"update">> ->
+            web:menu_update(),
+            {error, "菜单更新成功"};
         _ -> {dtl}
     end.
