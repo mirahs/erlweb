@@ -36,7 +36,6 @@ page(Req, Table, Fields, Wheres, Orders, Groups) ->
     Limit   = ?IF(Limit0 =:= <<>>, 10, util:to_integer(Limit0)),
     Start   = (Page - 1) * Limit,
 
-
     Count   = get_count(Table, Fields, Wheres),
 
     Sql     = "SELECT " ++ format_field(Fields) ++ " FROM `" ++ util:to_list(Table) ++ "`" ++ format_where(Wheres) ++ format_group(Groups) ++ format_order(Orders) ++ " LIMIT " ++ util:to_list(Start) ++ "," ++ util:to_list(Limit),
@@ -81,14 +80,14 @@ format_field(Fields) ->
 
 format_where(Wheres) ->
     {FieldList, DataList} = lists:unzip(Wheres),
-    FieldString = util:list_to_string(FieldList, "`", "`=~s,`", "`=~s"),
+    FieldString = util:list_to_string(FieldList, "`", "`=~s AND `", "`=~s"),
     case mysql:format(FieldString, DataList) of
         "" -> "";
         WhereStr -> " WHERE " ++ WhereStr
     end.
 
 format_order([]) -> "";
-format_order(Orders) when is_list(Orders) ->
+format_order(Orders = [Item | _]) when is_tuple(Item); is_atom(Item) ->
     Fun = fun
               ({Field, Order}, OrderAcc) -> ["`" ++ util:to_list(Field) ++ "` " ++ util:to_list(Order) | OrderAcc];
               (Field, OrderAcc) -> ["`" ++ util:to_list(Field) ++ "`" | OrderAcc]
@@ -96,7 +95,7 @@ format_order(Orders) when is_list(Orders) ->
     Orders2 = lists:reverse(lists:foldl(Fun, [], Orders)),
     "ORDER BY " ++ util:list_to_string(Orders2, "", ",", "");
 format_order(Order) ->
-    "ORDER BY `" ++ util:to_list(Order) ++ "`".
+    "ORDER BY " ++ util:to_list(Order).
 
 format_group([]) -> "";
 format_group(Groups) when is_list(Groups) ->
