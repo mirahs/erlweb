@@ -37,9 +37,9 @@ master_new(?web_post, Req, _Opts) ->
     Id      = proplists:get_value(<<"id">>, Data, <<>>),
     Account = proplists:get_value(<<"account">>, Data, <<>>),
     Type    = proplists:get_value(<<"type">>, Data, <<>>),
-    Note    = proplists:get_value(<<"note">>, Data, <<>>),
-    ?IF(Account =:= <<>> orelse Type =:= <<>> orelse Note =:= <<>>, ?web_failed("请输入正确的数据"), skip),
-    Bind = [{account, Account}, {type, Type}, {note, Note}],
+    Remark  = proplists:get_value(<<"remark">>, Data, <<>>),
+    ?IF(Account =:= <<>> orelse Type =:= <<>> orelse Remark =:= <<>>, ?web_failed("请输入正确的数据"), skip),
+    Bind = [{account, Account}, {type, Type}, {remark, Remark}],
     case Id of
         <<>> ->
             Password = util:md5(util:md5("123456")),

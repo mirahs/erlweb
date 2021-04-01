@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `adm_user` (
   `type` tinyint(3) unsigned NOT NULL COMMENT '类型 10:管理员|20:游客',
 
   `is_locked` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '是否被锁住 0:否|1:是',
-  `note` text NOT NULL COMMENT '备注',
+  `remark` text NOT NULL COMMENT '备注',
 
   `login_times` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
   `login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `adm_user` (
 -- ----------------------------
 -- Records of adm_user
 -- ----------------------------
-INSERT INTO `adm_user` (`id`, `account`, `password`, `type`, `note`) VALUES
+INSERT INTO `adm_user` (`id`, `account`, `password`, `type`, `remark`) VALUES
 (1, 'admin', 'c3284d0f94606de1fd2af172aba15bf3', 10, 'admin');
 
 -- ----------------------------

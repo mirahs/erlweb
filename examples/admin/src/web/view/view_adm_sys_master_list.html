@@ -26,7 +26,7 @@
             <td>{% ymdhis data.login_time %}</td>
             <td>{{ data.login_ip }}</td>
             <td><a class="layui-btn layui-btn-normal layui-btn-xs" href="?act=lock&id={{ data.id }}&is_locked={{ data.is_locked }}">{{ data.is_locked_desc }}</a></td>
-            <td>{{ data.note }}</td>
+            <td>{{ data.remark }}</td>
             <td>
                 <div class="layui-btn-group">
                     <a class="layui-btn layui-btn-danger layui-btn-xs" href="password?account={{ data.account }}">重置密码</a>
