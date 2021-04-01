@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `log_adm_user_login` (
   `account` varchar(32) NOT NULL COMMENT '帐号',
   `time` int(10) unsigned NOT NULL COMMENT '时间',
   `status` tinyint(3) unsigned NOT NULL COMMENT '状态 0:失败|1:成功',
-  `ip` char(15) NOT NULL COMMENT 'IP',
+  `ip` varchar(15) NOT NULL COMMENT 'IP',
   `ip_segment` varchar(31) NOT NULL COMMENT 'IP段',
   `address` varchar(128) NOT NULL COMMENT '地址',
   PRIMARY KEY (`id`)
