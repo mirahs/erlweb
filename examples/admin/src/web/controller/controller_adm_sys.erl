@@ -91,7 +91,7 @@ log_login(?web_get, Req, _Opts) ->
     Account = proplists:get_value(<<"account">>, Data, <<>>),
     Wheres  = ?IF(Account =:= <<>>, [], begin erlweb_tpl:assign(account, Account), [{account, Account}] end),
 
-    #{page := Page, datas := Datas0} = web_page:page_where(Req, log_adm_user_login, Wheres),
+    #{page := Page, datas := Datas0} = web_page:page(Req, log_adm_user_login, [], Wheres, "`id` DESC", []),
     Fun = fun
               (#{status := StatusF} = DataF, DatasAcc) ->
                   StatusDesc = ?IF(StatusF =:= 1, "成功", "失败"),

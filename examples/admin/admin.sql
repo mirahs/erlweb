@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `adm_user` (
 
   `login_times` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录次数',
   `login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
-  `login_ip` char(15) NOT NULL DEFAULT '' COMMENT '登录IP',
+  `login_ip` varchar(15) NOT NULL DEFAULT '' COMMENT '登录IP',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account` (`account`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台账号';
