@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{% web_static_url %}layui/css/layui.css">
 
     <style type="text/css">
-        .layui-layout-admin .layui-right-head{ position: fixed; left: 200px; right: 0; top: 60px; bottom: 0; height: 32px; line-height: 32px; padding: 0 10px; background-color: #eee }
+        .layui-layout-admin .layui-right-head { position: fixed; left: 200px; right: 0; top: 60px; bottom: 0; height: 32px; line-height: 32px; padding: 0 10px; background-color: #eee; }
     </style>
 </head>
 
@@ -41,7 +41,7 @@
         <div class="layui-side-scroll">
             {% for menu in menus %}
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul id="sidebar_{{ menu.code }}" style="display: none" class="layui-nav layui-nav-tree" lay-filter="test">
+            <ul id="sidebar_{{ menu.code }}" style="display: none" class="layui-nav layui-nav-tree">
                 {% for menuSub in menu.data %}
                 {% if menuSub.code %}
                 <li class="layui-nav-item layui-nav-itemed">
@@ -49,7 +49,7 @@
                 </li>
                 {% else %}
                 <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:">{{ menuSub.name }}</a>
+                    <a href="javascript:">{{ menuSub.name }}</a>
                     {% for menuSubSub in menuSub.data %}
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:" onclick="clickItem('{{ menuSubSub.name }}', '{{ menuSubSub.url }}', '{{ menu.name }}');">{{ menuSubSub.name }}</a></dd>
@@ -84,7 +84,6 @@
 
 <script src="{% web_static_url %}js/jquery.min.js"></script>
 <script src="{% web_static_url %}layui/layui.js"></script>
-
 <script type="text/javascript">
     layui.use('element', function () { });
 
