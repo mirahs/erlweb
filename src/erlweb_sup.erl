@@ -42,7 +42,12 @@ init([ArgMap2]) ->
     end,
 
     Session = {erlweb_session_mgr, {erlweb_session_mgr, start_link, []}, permanent, 5000, worker, [erlweb_session_mgr]},
-    {ok, {{one_for_one, 10, 10}, [Session]} }.
+
+    DirVar0 = maps:get(dir_var, ArgMap, undefined),
+    DirVar  = ?IF(DirVar0 =:= undefined, code:priv_dir(erlweb) ++ "/" ++ erlweb_util:to_list(Port) ++ "/", DirVar0),
+    Logger  = {erlweb_logger_file, {erlweb_logger_file, start_link, [DirVar]}, permanent, 5000, worker, [erlweb_logger_file]},
+
+    {ok, {{one_for_one, 10, 10}, [Session, Logger]} }.
 
 
 %%%===================================================================
