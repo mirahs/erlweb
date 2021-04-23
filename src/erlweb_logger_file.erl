@@ -60,6 +60,7 @@ error(Format, Args, Mod, Line) ->
 %%%===================================================================
 
 init([DirVar]) ->
+    process_flag(trap_exit, true),
     do_init(DirVar).
 
 handle_call(_Request, _From, State) ->
